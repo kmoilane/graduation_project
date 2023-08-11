@@ -30,7 +30,7 @@ high-priority here, so testing is of paramount importance.
           it can be hard to find correct tutorials from the Internet)
         - Documentation
         - Adjustable time scale (e.g. simulation runs faster/slower than real-time)
-        - All the fancy stuff you an imagine.
+        - All the fancy stuff you can imagine.
 
 ## Extra details
 - Heating elements can be assumed to heat the environment with their operational power.
