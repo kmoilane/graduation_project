@@ -53,25 +53,26 @@ VS Code, CMake, C++, doctest, Git, Github projects, agile, Linux
 - Planning
     - Structure and modularization
     - Assign tasks
-
-### Tuesday
-
 - Prototyping
     - Namespace(s)
     - Classes
     - Functions
     - Environment and algorithms
 
+### Tuesday
+
+- Finish prototype
+- SHM learning/implementation
+
 ### Wednesday
 
-- Prototyping continues
 - SHM learning/implementation
 
 ### Thursday
 
-- Debugging
 - SHM implementation and integration testing with controller group
 (if they're ready)
+- Debugging
 - Starting MVP
 
 ### Friday
