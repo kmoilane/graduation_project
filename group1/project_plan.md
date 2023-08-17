@@ -36,7 +36,8 @@ some of us can start to
 polish the prototype into an MVP. MVP would include communication and some
 minimum environment simulation, so that controller and UI can work with it
 properly. Additional functionality would be to implement better algorithms into
-the simulation environment (e.g. how heat and cooling affect all sensors etc).
+the simulation environment (e.g. how heat and cooling affect all sensors etc),
+optimization and increase readability.
 
 During the SHM implementation and after it, we will discuss with the controller 
 group about the implementation and possibly update our simulation based on 
@@ -68,23 +69,41 @@ VS Code, CMake, C++, doctest, Git, Github projects, agile, Linux
 
 ### Thursday
 
-- Prototyping continues
+- Debugging
 - SHM implementation and integration testing with controller group
 (if they're ready)
+- Starting MVP
 
-### Friday - Wednesday
+### Friday
 
-- Prototype -> MVP
+- MVP continues
 - Bug fixing
-- Algorithm optimization
-- General keyboard smashing
+- Testing
+
+### Monday
+
+- Finish MVP
+- Debugging
+- Documentation
 - Testing
 - Presentation
+
+### Tuesday
+
+- Backup day for MVP / Optimization
+- Debugging
 - Dress rehearsals on Tuesday 14-15:30 
 
+### Wednesday
+
+- Optimization
+- Fine tuning
+  
 ### Thursday
 
-- Fine tuning
+- Presentation
+- Debug
+- Final documentation
 
 ### Friday
 
