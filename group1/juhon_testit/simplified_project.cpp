@@ -1,10 +1,17 @@
+#include "random_between.h"
+#include "units.h"
+#include "heater.h"
+#include "ambient_temp.h"
+
 #include <iostream>
 #include <deque>
 #include <array>
 #include <chrono>
 #include <thread>
 #include <algorithm>
-#include <memory>
+#include <iomanip>
+
+
 
 
 class Configuration
@@ -17,14 +24,6 @@ public:
 };
 
 
-
-using celcius = double;
-using watts = int16_t;
-using seconds = int16_t;
-using speed = int16_t;
-using milliseconds = int16_t;
-
-
 struct Simulation
 {
     int speed_multiplier {1};
@@ -35,8 +34,7 @@ struct Simulation
     const double convoyer_breakdown_prob {0.05};
 
     std::array<celcius, 10> temp_sensors;
-    celcius ambient_temperature {20};
-    celcius convoyer_temperature {20};
+    AmbientTemperature ambient_temperature {20};
 
     const std::array<double, 10> temp_sensor_heater_effect{
         0.05, 0.15, 0.25, 0.5, 0.75, 0.65, 0.45, 0.3, 0.1, 0.05
@@ -45,6 +43,7 @@ struct Simulation
         0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15
     };
 
+    celcius convoyer_temperature {20};
     speed covoyer_speed_current {0};
     int8_t convoyer_speedsensor_current {0};
     milliseconds convoyer_shift_time {0};
@@ -60,12 +59,7 @@ struct Simulation
     const double convoyer_effiency_min {0};
     const double convoyer_effiency_max {0.44};
 
-    const seconds heater_breakdown_time {10};
-    const watts heater_power_increase_1s {10};
-    const watts heater_power_decrease_1s {5};
-    const watts heater_power_min {0};
-    const watts heater_power_max {2000};
-    std::array<watts, 3> heater_power_levels {0,0,0};
+    HeaterUnits heater {0b0};
 
     bool Bolter_state_on {false};
     bool Shaper_state_on {false};
@@ -73,9 +67,7 @@ struct Simulation
     bool Cooler_state_on {false};
 
     // initialize variables from file
-    Simulation(Configuration& config){
-        std::fill(temp_sensors.begin(), temp_sensors.end(), ambient_temperature);
-    };
+    Simulation(Configuration& config){};
 
     // shift a product one step forward
     void step(){
@@ -107,13 +99,21 @@ struct Simulation
 
     void random_sensor_breakdown(){}
     void random_convoyer_breakdown(){}
-    
-    void update_heaters(){};
+
     void update_sensors(){};
     void update_convoyer(){};
-    void update_ambient_temperature(){}
+    void update_heaters(){};
+
+
+    // simulates 'natural' ambient temperature change over time
+    void update_ambient_temperature(){
+        ambient_temperature.update();
+    }
 
 };
+
+
+
 
 class Communicator{
 
@@ -122,7 +122,7 @@ public:
     Communicator(){}
 
     // set simulation variables here
-    void listen(){}
+    void listen(Simulation& sim){}
 
     // send simulation variables here
     void send(Simulation& sim){}
@@ -138,19 +138,48 @@ int main(int argc, char const *argv[])
     Simulation sim(config);
     Communicator communicator;
 
-    int test_max_loop {10};
+    // TEMPORARY heater demo
 
+    auto start = std::chrono::high_resolution_clock::now();
+    sim.heater.set_states(0b00000101);
+    sim.heater.set_power_levels(0,0,0);
+
+    // TEMPORARY heater demo
+
+    int test_max_loop {100};
     for (size_t i = 0; i < test_max_loop; i++){
 
-        sim.step();            // final solution should check if step can be taken
-        sim.update_heaters();  // make update based on propability or/and time
-        sim.update_sensors();  // make update based on propability or/and time
-        sim.update_convoyer(); // make update based on propability or/and time
+        sim.step();               // final solution should check if step can be taken
+        sim.update_heaters();     // make update based on propability or/and time
+        sim.update_sensors();     // make update based on propability or/and time
+        sim.update_convoyer();    // make update based on propability or/and time
 
         communicator.send(sim);   // ideally in a another thread
-        communicator.listen(); // ideally in a another thread
-        std::cout << sim.temp_sensors[0] << '\n';
+        communicator.listen(sim); // ideally in a another thread
+
+
+
+        // TEMPORARY heater demo
+
+        sim.heater.update();
+
+        auto end = std::chrono::high_resolution_clock::now();
+        auto elapsed_shift = std::chrono::duration_cast<std::chrono::seconds>(end - start);
+
+        for (size_t i = 0; i < 3; i++){
+            std::cout << std::setw(10) << sim.heater.get_power_level(i) << " || ";
+        }
+
+        std::cout << "time elapsed: " << elapsed_shift.count() << '\n';
+
+        // TEMPORARY heater demo
+
+
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+
     }
+    
     
     return 0;
 }
