@@ -1,0 +1,10 @@
+{
+    "Simulation" :
+    {
+        "Conveyor" :
+        {
+            "speed_current": 255,
+            "speed_target": 255
+        }
+    }
+}
