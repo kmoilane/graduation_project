@@ -2,6 +2,7 @@
 #define CONVEYOR_HPP
 
 #include "units.hpp"
+#include "config.hpp"
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
@@ -13,9 +14,9 @@ class Conveyor
 {
 public:
     Conveyor() = default;
-    void update_conveyor()
+    void update()
     {
-        upm_target = std::floor(unsigned(speed_target) * upm_per_speed);
+        upm_target = calc_upm(speed_target);
         if (upm_current == upm_target)
             std::cout << "Target and current are same\n";
         else
@@ -28,17 +29,18 @@ public:
                 // Set the start time to be current time for the next check
                 shift_begin = now;
                 
-                // Increase or decrease current speed
-                upm_current = update_speed(upm_target, upm_current);
+                // Increase or decrease current upm and speed
+                upm_current = update_upm(upm_target, upm_current);
+                speed_current = calc_speed(upm_current);
                 
                 // Increase or decrease current power
-                power_current = update_power(upm_target, upm_current, power_current);
+                power_current = calc_power(upm_current);
 
                 // Increase or decrease current efficiency
-                efficiency_current = update_efficiency(upm_current);
+                efficiency_current = calc_efficiency(upm_current);
 
                 // Increase or decrease temperature
-                temperature = update_temperature(power_current, efficiency_current);
+                temperature = calc_temperature(power_current, efficiency_current);
             }
         }
         if (!broken && upm_current > speed_breakdown)
@@ -49,6 +51,28 @@ public:
         }
     };
 
+    bool configure(Configuration& config)
+    {
+        speed target = config.data["Simulation"]["Conveyor"]["speed_target"];
+        speed current = config.data["Simulation"]["Conveyor"]["speed_current"];
+        if (target >= 0 && target <= 255 && current >= 0 && current <= 255)
+        {
+            speed_target = static_cast<uint8_t>(target);
+            speed_current = static_cast<uint8_t>(current);
+            upm_target = calc_upm(speed_target);
+            upm_current = calc_upm(current);
+            efficiency_current = calc_efficiency(upm_current);
+            power_current = calc_power(upm_current);
+            temperature = calc_temperature(power_current, efficiency_current);
+        }
+        else
+        {
+            std::cout << "Configuration error: Conveyor speeds must be 0-255\n";
+            return false;
+        }
+        return true;
+    }
+
     void set(uint8_t value)
     {
         if (broken)
@@ -58,6 +82,15 @@ public:
         }
         else
             speed_target = static_cast<unsigned>(value);
+    }
+    void set_current(uint8_t value)
+    {
+        if (value <= 255 && value >= 0)
+            speed_current = value;
+    }
+    uint8_t get()
+    {
+        return speed_current;
     }
     void overheating()
     {
@@ -74,6 +107,7 @@ private:
     double upm_current {600}; // 0-600 units per minute (conveyor speed)
     double upm_target {0}; // 0-600 units per minute target (conveyor speed)
     uint8_t speed_target {0}; // 0-255 conveyor speed set by controller
+    uint8_t speed_current {0}; // 0-255 convoyer speed sent to controller
     milliseconds shift_time {1000}; // Time to shift speed by 1upm
     time_stamp shift_begin = std::chrono::high_resolution_clock::now();
     //const speed upm_min {0}; unused
@@ -95,27 +129,33 @@ private:
     const speed speed_breakdown {540}; // upm after which breakdown is possible
     const double breakdown_prob {5}; // probability for breakdonw in %
     bool broken {false};
-    speed broken_speed_max {200}; // max speed when broken
+    uint8_t broken_speed_max {200}; // max speed when broken
 
-    double update_speed(double target, double current)
+    double update_upm(double target, double current)
     {
         if (target > current)
             return ++current;
         return --current;
     }
-    double update_power(double upm_target, double upm_current, watts curr)
+    double calc_upm(uint8_t speed)
     {
-        if (upm_target > upm_current)
-            return curr += one_upm_in_watts;
-        return curr -= one_upm_in_watts;
+        return std::floor(unsigned(speed) * upm_per_speed);
     }
-    double update_efficiency(double upm)
+    uint8_t calc_speed(double upm)
+    {
+        return std::floor(upm / upm_per_speed);
+    }
+    double calc_power(double upm_current)
+    {
+        return power_min + upm_current * one_upm_in_watts;
+    }
+    double calc_efficiency(double upm)
     {
         return std::max(efficiency_max,
             (efficiency_min -
             ((efficiency_min - efficiency_max) * upm / max_efficiency_upm)));
     }
-    double update_temperature(double power, double efficiency)
+    double calc_temperature(double power, double efficiency)
     {
         // efficiency / 100 for easier use since it represents percentage
         return power * (efficiency / 100) / watts_per_celsius;
