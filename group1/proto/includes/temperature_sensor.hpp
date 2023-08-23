@@ -13,7 +13,7 @@ public:
         heater_factor = heater_factor;
     }
 
-    // voltage in millivolts
+/*     // voltage in millivolts
     int16_t voltage{0};
     bool state{false};
     void update()
@@ -26,7 +26,7 @@ public:
 private:
     // joku enum, vaihtoehdot 0.05, 0.1, 0.15, 0.20, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5
     double heater_factor;
-    double temperature;
+    double temperature; */
 };
 
 #endif

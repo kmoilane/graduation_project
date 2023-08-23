@@ -5,6 +5,7 @@
 #include "includes/conveyor.hpp"
 #include "includes/temperature_sensor.hpp"
 #include "includes/simulation.hpp"
+#include "includes/config.hpp"
 
 #include <iostream>
 #include <deque>
@@ -13,21 +14,7 @@
 #include <thread>
 #include <algorithm>
 #include <iomanip>
-#include <nlohmann/json.hpp>
-#include <fstream>
 
-class Configuration
-{
-public:
-    std::string filepath;
-    json data;
-
-    Configuration(std::string&& path) : filepath(path) {
-        std::ifstream file(filepath);
-        data = json::parse(file);
-    }
-    ~Configuration() {}
-};
 
 class Communicator{
 

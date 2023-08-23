@@ -7,6 +7,13 @@
 #include "ambient_temperature.hpp"
 #include "conveyor.hpp"
 #include "temperature_sensor.hpp"
+#include "config.hpp"
+
+#include <deque>
+
+
+
+
 
 struct Simulation
 {
@@ -22,13 +29,6 @@ struct Simulation
     std::array<TemperatureSensor, 10> temp_sensors {0.4, 0.45, 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15};
     AmbientTemperature ambient_temperature {20};
 
-    const std::array<double, 10> temp_sensor_heater_effect{
-        0.05, 0.15, 0.25, 0.5, 0.75, 0.65, 0.45, 0.3, 0.1, 0.05
-    };
-    const std::array<double, 10> temp_sensor_cooler_effect{
-        0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15
-    };
-
     HeaterUnits heater {0b0};
 
     bool Bolter_state_on {false};
@@ -38,11 +38,11 @@ struct Simulation
 
     // initialize variables from file
     Simulation(Configuration& config){
-        conveyor.upm_current = config.data["Simulation"]["Conveyor"]["upm_current"];
+/*         conveyor.upm_current = config.data["Simulation"]["Conveyor"]["upm_current"];
         conveyor.efficiency_current = config.data["Simulation"]["Conveyor"]["efficiency_current"];
         conveyor.power_current = config.data["Simulation"]["Conveyor"]["power_current"];
         conveyor.temperature = config.data["Simulation"]["Conveyor"]["temperature"];
-        conveyor.upm_target = conveyor.upm_current;
+        conveyor.upm_target = conveyor.upm_current; */
     };
 
     // shift a product one step forward
