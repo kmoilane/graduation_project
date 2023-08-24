@@ -3,12 +3,12 @@
 
 #include "units.hpp"
 #include "config.hpp"
+#include "random_between.hpp"
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
 #include <iostream>
 #include <math.h>
-
 
 class Conveyor
 {
@@ -89,12 +89,14 @@ public:
 
     void check_breakpoint(double temperature)
     {
+        std::cout << "Temperature in breakpoint: " << temperature << '\n';
+        std::cout << "Speed in breakpoint: " << upm_current << '\n';
+
         if (temperature > breakdown_temperature || upm_current > speed_breakdown)
         {
             if (!broken)
             {
-                std::cout << "Not yet broken\n";
-                int rand = std::rand() % 100;
+                int rand = rand_between::rand_between(1, 100);
                 if (rand < breakdown_prob)
                     broken = true;
             }

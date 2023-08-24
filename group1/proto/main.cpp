@@ -23,7 +23,10 @@ public:
     Communicator(){}
 
     // set simulation variables here
-    void listen(Simulation& sim){}
+    void listen(Simulation& sim){
+        // This would come from shared memory
+        sim.conveyor.set_speed_target(static_cast<unsigned>(255));
+    }
 
     // send simulation variables here
     void send(Simulation& sim){}
