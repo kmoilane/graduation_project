@@ -11,5 +11,6 @@ using speed = int16_t;
 using milliseconds = int16_t;
 using time_stamp = std::chrono::system_clock::time_point;
 using json = nlohmann::json;
+using millivolts = int16_t;
 
 #endif // UNITS_HPP

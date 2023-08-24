@@ -1,6 +1,7 @@
 #if !defined(TEMPERATURE_SENSOR_HPP)
 #define TEMPERATURE_SENSOR_HPP
 
+#include "units.hpp"
 #include "heater.hpp"
 #include "conveyor.hpp"
 #include "ambient_temperature.hpp"
@@ -8,25 +9,33 @@
 class TemperatureSensor
 {
 public:
-    TemperatureSensor(double heater_factor)
+    celsius sensor_temperature{5};
+    TemperatureSensor(double heater_factor, int id)
     {
-        heater_factor = heater_factor;
+        heater_factor_ = heater_factor;
+        id_ = id;
+    }
+    // voltage in millivolts
+    millivolts voltage{0};
+    bool state{false};
+
+    void update(celsius ambient_temp, celsius heater_temp, celsius conveyor_temp )
+    {
+        std::cout << "ambient: " << ambient_temp << " heater: " << heater_temp << " conveyor: " << conveyor_temp << "\n";
+        sensor_temperature = ambient_temp + (heater_temp * heater_factor_) + conveyor_temp;
+        std::cout << "sensor " << id_ << ": " << sensor_temperature << "\n";
+
+        voltage = 10 * sensor_temperature;
     }
 
-/*     // voltage in millivolts
-    int16_t voltage{0};
-    bool state{false};
-    void update()
+    celsius get_temperature()
     {
-        temperature = get_temperature() + HeaterUnits::get_temperature() * heater_factor 
-        + Convoyer::get_temperature();
-        voltage = 10 * temperature;
+        return sensor_temperature;
     }
 
 private:
-    // joku enum, vaihtoehdot 0.05, 0.1, 0.15, 0.20, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5
-    double heater_factor;
-    double temperature; */
+    double heater_factor_;
+    int id_;
 };
 
 #endif

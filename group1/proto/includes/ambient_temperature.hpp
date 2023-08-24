@@ -9,7 +9,7 @@
 class AmbientTemperature
 {
 private:
-    const celsius initial_temperature {20};
+    celsius initial_temperature {20};
     const celsius update_value {0.2};
     const celsius max_offset {5};
 
@@ -48,6 +48,12 @@ public:
 
     celsius get_temperature(){
         return current_temperature;
+    }
+
+    bool configure(Configuration& config)
+    {
+        initial_temperature = config.data["Simulation"]["Ambient_temperature"]["ambient_temperature"];
+        return true;
     }
 
 };

@@ -1,10 +1,19 @@
 {
+    
     "Simulation" :
     {
-        "Conveyor" :
-        {
-            "speed_current": 255,
-            "speed_target": 255
-        }
+            "Conveyor" :
+            {
+                "speed_current": 255,
+                "speed_target": 255
+            },
+            "Heater" :
+            {
+                "temperature_max": 200
+            },
+            "Ambient_temperature" :
+            {
+                "ambient_temperature" : 23
+            }
     }
 }

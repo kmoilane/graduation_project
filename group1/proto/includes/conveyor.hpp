@@ -18,7 +18,7 @@ public:
     {
         upm_target = calc_upm(speed_target);
         if (upm_current == upm_target)
-            std::cout << "Target and current are same\n";
+            return;
         else
         {
             auto now = std::chrono::high_resolution_clock::now();
@@ -42,12 +42,6 @@ public:
                 // Increase or decrease temperature
                 temperature = calc_temperature(power_current, efficiency_current);
             }
-        }
-        if (!broken && upm_current > speed_breakdown)
-        {
-            int rand = std::rand() % 100;
-            if (rand < breakdown_prob)
-                broken = true;
         }
     };
 
@@ -73,7 +67,7 @@ public:
         return true;
     }
 
-    void set(uint8_t value)
+    void set_speed_target(uint8_t value)
     {
         if (broken)
         {
@@ -83,24 +77,28 @@ public:
         else
             speed_target = static_cast<unsigned>(value);
     }
-    void set_current(uint8_t value)
+    void set_speed_current(uint8_t value)
     {
-        if (value <= 255 && value >= 0)
+        if (value <= speed_max && value >= speed_min)
             speed_current = value;
     }
-    uint8_t get()
+    uint8_t get_speed_current() { return speed_current; }
+    celsius get_temperature() { return temperature; }
+    double get_upm_current() { return upm_current; }
+
+
+    void check_breakpoint(double temperature)
     {
-        return speed_current;
-    }
-    void overheating()
-    {
-        /*
-        ** Do something fun
-        */
-    }
-    celsius get_temperature()
-    {
-        return temperature;
+        if (temperature > breakdown_temperature || upm_current > speed_breakdown)
+        {
+            if (!broken)
+            {
+                std::cout << "Not yet broken\n";
+                int rand = std::rand() % 100;
+                if (rand < breakdown_prob)
+                    broken = true;
+            }
+        }
     }
 
 private:
@@ -112,6 +110,8 @@ private:
     time_stamp shift_begin = std::chrono::high_resolution_clock::now();
     //const speed upm_min {0}; unused
     //const speed upm_max {600}; unused
+    const uint8_t speed_max {255};
+    const uint8_t speed_min {0};
 
     double efficiency_current {56}; // current efficiency (56 - 100)
     watts power_current {20000};  // current power in watts (350 - 20000)

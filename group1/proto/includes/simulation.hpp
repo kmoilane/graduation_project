@@ -8,76 +8,77 @@
 #include "conveyor.hpp"
 #include "temperature_sensor.hpp"
 #include "config.hpp"
-
-#include <deque>
-
-
-
-
+#include "quality_control.hpp"
+#include "devices.hpp"
 
 struct Simulation
 {
     int speed_multiplier {1};
-    std::deque<bool> qc_storage;
-    const speed qc_speed_max = 542; 
-    const double qc_false_positive_prob {0.005};
-    const double bolter_fail_prob {0.02};
 
+
+    // status of objects in production line stages (-1 = not present, 0 = invalid, 1 = valid)
+    std::array<int, 4> stages {-1, -1, -1, -1};
+
+    AmbientTemperature ambient_temperature {20};
+    HeaterUnits heater {0b00000000};
+    QualityControl q_control;
     Conveyor conveyor;
 
-     // joku enum, vaihtoehdot 0.05, 0.1, 0.15, 0.20, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5
-    std::array<TemperatureSensor, 10> temp_sensors {0.4, 0.45, 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15};
-    AmbientTemperature ambient_temperature {20};
+    // Init sensor 
+    std::vector<TemperatureSensor> temp_sensors{{0.4, 0}, {0.45, 1}, {0.5, 2}, {0.45, 3}, {0.4, 4}, {0.35, 5}, {0.3, 6}, {0.25, 7}, {0.2, 8}, {0.15, 9}};
 
-    HeaterUnits heater {0b0};
+    // average temperature of sensors
+    celsius get_average_temperature()
+    {
+        celsius average{0};
+        for (TemperatureSensor sensor : temp_sensors)
+        {
+            average += sensor.get_temperature();
+        }
 
-    bool Bolter_state_on {false};
-    bool Shaper_state_on {false};
-    bool Camera_state_on {false};
-    bool Cooler_state_on {false};
+        return average / temp_sensors.size();
+    }
+
+    Bolter bolter;
+    Shaper shaper;
+    Cooler cooler;
 
     // initialize variables from file
     Simulation(Configuration& config){
-/*         conveyor.upm_current = config.data["Simulation"]["Conveyor"]["upm_current"];
-        conveyor.efficiency_current = config.data["Simulation"]["Conveyor"]["efficiency_current"];
-        conveyor.power_current = config.data["Simulation"]["Conveyor"]["power_current"];
-        conveyor.temperature = config.data["Simulation"]["Conveyor"]["temperature"];
-        conveyor.upm_target = conveyor.upm_current; */
+        conveyor.configure(config);
+        heater.configure(config);
+        ambient_temperature.configure(config);
     };
 
     // shift a product one step forward
     void step(){
-        
-        bool product_state {true};
-        product_state = apply_heating(product_state);
-        product_state = apply_shaping(product_state);
-        product_state = apply_bolting(product_state);
-        product_state = apply_quality_control(product_state);
 
-        if (qc_storage.size() == 16){
-            qc_storage.clear();
-        }
+        // process item in current new stage
+        stages[1] = heater.process(stages[1]);
+        stages[2] = shaper.process(stages[2]);
+        stages[3] = bolter.process(stages[3]);
 
-        // Push to left most spot
-        // Every object has now shifted one index to the right
-        qc_storage.push_front(product_state); 
+        // TODO conveyors u_speed not available
+        q_control.apply_camera(conveyor.get_upm_current(), stages.back());
 
-        // sensors may break
-        random_sensor_breakdown();
-        // convoyer may break
-        random_convoyer_breakdown();
+        // shift elements to a new position and add a new item to the production line
+        std::rotate(stages.rbegin(), stages.rbegin() - 1, stages.rend());
+        stages[0] = 1;
     }
 
-    bool apply_heating(bool product_state){return product_state;}
-    bool apply_shaping(bool product_state){return product_state;}
-    bool apply_bolting(bool product_state){return product_state;}
-    bool apply_quality_control(bool product_state){return product_state;}
-
     void random_sensor_breakdown(){}
-    void random_convoyer_breakdown(){}
+    void random_conveyor_breakdown()
+    {
+        conveyor.check_breakpoint(get_average_temperature());
+    }
 
-    void update_sensors(){};
-    void update_convoyer(){};
+    void update_sensors()
+    {
+        for (auto& sensor : temp_sensors)
+        {
+            sensor.update(ambient_temperature.get_temperature(), heater.get_temperature(), conveyor.get_temperature());
+        }
+    };
 
     void update_heaters(){
         heater.update();
