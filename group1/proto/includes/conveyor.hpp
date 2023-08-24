@@ -17,32 +17,35 @@ public:
     void update()
     {
         upm_target = calc_upm(speed_target);
-        if (upm_current == upm_target)
-            return;
-        else
-        {
-            auto now = std::chrono::high_resolution_clock::now();
+        auto now = std::chrono::high_resolution_clock::now();
+        
+        if (upm_current != upm_target){
+
             auto diff = now - shift_begin;
             auto diff_ms = std::chrono::duration_cast<std::chrono::milliseconds>(diff);
-            if (diff_ms.count() >= shift_time)
-            {
-                // Set the start time to be current time for the next check
-                shift_begin = now;
-                
-                // Increase or decrease current upm and speed
-                upm_current = update_upm(upm_target, upm_current);
-                speed_current = calc_speed(upm_current);
-                
-                // Increase or decrease current power
-                power_current = calc_power(upm_current);
 
-                // Increase or decrease current efficiency
-                efficiency_current = calc_efficiency(upm_current);
+            // POSSIBLE UPDATE
+            double multiplier = (diff_ms.count() / 1000.0);
+            double direction = upm_target > upm_current ? 1.0 : -1.0;
+            upm_current += (multiplier * direction); // change_speed 1/s 
 
-                // Increase or decrease temperature
-                temperature = calc_temperature(power_current, efficiency_current);
-            }
+            // Increase or decrease current upm and speed
+            //upm_current = update_upm(upm_target, upm_current);
+            speed_current = calc_speed(upm_current);
+            
+            // Increase or decrease current power
+            power_current = calc_power(upm_current);
+
+            // Increase or decrease current efficiency
+            efficiency_current = calc_efficiency(upm_current);
+
+            // Increase or decrease temperature
+            temperature = calc_temperature(power_current, efficiency_current);
+
+            // POSSIBLE UPDATE
         }
+
+        shift_begin = now;
     };
 
     bool configure(Configuration& config)
@@ -82,16 +85,10 @@ public:
         if (value <= speed_max && value >= speed_min)
             speed_current = value;
     }
-    uint8_t get_speed_current() { return speed_current; }
-    celsius get_temperature() { return temperature; }
-    double get_upm_current() { return upm_current; }
 
 
     void check_breakpoint(double temperature)
     {
-        std::cout << "Temperature in breakpoint: " << temperature << '\n';
-        std::cout << "Speed in breakpoint: " << upm_current << '\n';
-
         if (temperature > breakdown_temperature || upm_current > speed_breakdown)
         {
             if (!broken)
@@ -103,35 +100,39 @@ public:
         }
     }
 
+    uint8_t get_speed_current() { return speed_current; }
+    celsius get_temperature() { return temperature; }
+    double get_upm_current() { return std::floor(upm_current); }
+
 private:
-    double upm_current {600}; // 0-600 units per minute (conveyor speed)
-    double upm_target {0}; // 0-600 units per minute target (conveyor speed)
-    uint8_t speed_target {0}; // 0-255 conveyor speed set by controller
-    uint8_t speed_current {0}; // 0-255 convoyer speed sent to controller
-    milliseconds shift_time {1000}; // Time to shift speed by 1upm
+    double upm_current {600};                   // 0-600 units per minute (conveyor speed)
+    double upm_target {0};                      // 0-600 units per minute target (conveyor speed)
+    uint8_t speed_target {0};                   // 0-255 conveyor speed set by controller
+    uint8_t speed_current {0};                  // 0-255 convoyer speed sent to controller
+    milliseconds shift_time {1000};             // Time to shift speed by 1upm
     time_stamp shift_begin = std::chrono::high_resolution_clock::now();
     //const speed upm_min {0}; unused
     //const speed upm_max {600}; unused
     const uint8_t speed_max {255};
     const uint8_t speed_min {0};
 
-    double efficiency_current {56}; // current efficiency (56 - 100)
-    watts power_current {20000};  // current power in watts (350 - 20000)
+    double efficiency_current {56};             // current efficiency (56 - 100)
+    watts power_current {20000};                // current power in watts (350 - 20000)
     const watts power_min {350};
     const watts power_max {20'000};
-    const double one_upm_in_watts {32.75}; // power per 1 upm
-    const double upm_per_speed {600.0 / 255}; // amount of units per second per speed
-    const double efficiency_min {100}; // how much power is converted to heat
-    const double efficiency_max {56.0}; // how much power is converted to heat
-    const double max_efficiency_upm {60}; // upm at which max efficiency is reached
-    const watts watts_per_celsius {1000}; // how many watts to increase temperature by 1 celsiud
-    double temperature {11.2}; // heat generated by conveyor
+    const double one_upm_in_watts {32.75};      // power per 1 upm
+    const double upm_per_speed {600.0 / 255};   // amount of units per second per speed
+    const double efficiency_min {100};          // how much power is converted to heat
+    const double efficiency_max {56.0};         // how much power is converted to heat
+    const double max_efficiency_upm {60};       // upm at which max efficiency is reached
+    const watts watts_per_celsius {1000};       // how many watts to increase temperature by 1 celsiud
+    double temperature {11.2};                  // heat generated by conveyor
     
-    const celsius breakdown_temperature {80}; // temp which after breakdown is possible
-    const speed speed_breakdown {540}; // upm after which breakdown is possible
-    const double breakdown_prob {5}; // probability for breakdonw in %
+    const celsius breakdown_temperature {80};   // temp which after breakdown is possible
+    const speed speed_breakdown {540};          // upm after which breakdown is possible
+    const double breakdown_prob {5};            // probability for breakdonw in %
     bool broken {false};
-    uint8_t broken_speed_max {200}; // max speed when broken
+    uint8_t broken_speed_max {200};             // max speed when broken
 
     double update_upm(double target, double current)
     {

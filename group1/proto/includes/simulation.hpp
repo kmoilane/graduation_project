@@ -25,13 +25,13 @@ struct Simulation
     Conveyor conveyor;
 
     // Init sensor 
-    std::vector<TemperatureSensor> temp_sensors{{0.4, 0}, {0.45, 1}, {0.5, 2}, {0.45, 3}, {0.4, 4}, {0.35, 5}, {0.3, 6}, {0.25, 7}, {0.2, 8}, {0.15, 9}};
+   std::vector<TemperatureSensor> temp_sensors{{0.4, 0, 50.0}, {0.45, 1, 0.01}, {0.5, 2, 0.01}, {0.45, 3, 0.01}, {0.4, 4, 0.01}, {0.35, 5, 0.01}, {0.3, 6, 0.01}, {0.25, 7, 0.01}, {0.2, 8, 0.01}, {0.15, 9, 0.01}};
 
     // average temperature of sensors
     celsius get_average_temperature()
     {
         celsius average{0};
-        for (TemperatureSensor sensor : temp_sensors)
+        for (TemperatureSensor& sensor : temp_sensors)
         {
             average += sensor.get_temperature();
         }

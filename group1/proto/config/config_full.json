@@ -4,8 +4,8 @@
     {
             "Conveyor" :
             {
-                "speed_current": 255,
-                "speed_target": 255
+                "speed_current": 100,
+                "speed_target": 100
             },
             "Heater" :
             {

@@ -1,41 +1,76 @@
 #if !defined(TEMPERATURE_SENSOR_HPP)
 #define TEMPERATURE_SENSOR_HPP
 
+#include "random_between.hpp"
 #include "units.hpp"
-#include "heater.hpp"
-#include "conveyor.hpp"
-#include "ambient_temperature.hpp"
 
 class TemperatureSensor
 {
 public:
-    celsius sensor_temperature{5};
-    TemperatureSensor(double heater_factor, int id)
+    TemperatureSensor(double heater_factor, int id, double break_probability)
     {
         heater_factor_ = heater_factor;
         id_ = id;
-    }
-    // voltage in millivolts
-    millivolts voltage{0};
-    bool state{false};
-
-    void update(celsius ambient_temp, celsius heater_temp, celsius conveyor_temp )
-    {
-        std::cout << "ambient: " << ambient_temp << " heater: " << heater_temp << " conveyor: " << conveyor_temp << "\n";
-        sensor_temperature = ambient_temp + (heater_temp * heater_factor_) + conveyor_temp;
-        std::cout << "sensor " << id_ << ": " << sensor_temperature << "\n";
-
-        voltage = 10 * sensor_temperature;
+        break_probability_ = break_probability;
+        is_broken = false;
     }
 
-    celsius get_temperature()
+    const celsius get_temperature() const
     {
-        return sensor_temperature;
+        return temperature;
+    }
+
+    const celsius get_voltage() const
+    {
+        std::cout << "voltage: " << voltage << "\n";
+        return voltage;
+    }
+
+    void update(celsius ambient_temp, celsius heater_temp, celsius conveyor_temp)
+    {
+        if (is_broken)
+        {
+            // std::cout << "sensor " << id_ << ": " << temperature << "\n";
+            return;
+        }
+        else if (rand_between::rand_between(0.0, 100.0) < break_probability_)
+        {
+            temperature = 0;
+            is_broken = true;
+        }
+        else
+        {
+            celsius tmp = ambient_temp + heater_temp * heater_factor_ + conveyor_temp + SENSOR_TEMP;
+            if (tmp < MIN_TEMP)
+            {
+                temperature = MIN_TEMP;
+            }
+            else if (tmp > MAX_TEMP)
+            {
+                temperature = MAX_TEMP;
+            }
+            else
+            {
+                temperature = tmp;
+            }
+            voltage = VOLTAGE_FACTOR * temperature;
+        }
+        std::cout << "sensor " << id_ << ": " << temperature << "\n";
     }
 
 private:
-    double heater_factor_;
-    int id_;
+    // voltage in millivolts
+    const celsius SENSOR_TEMP{0.08};
+    const celsius MAX_TEMP{110};
+    const celsius MIN_TEMP{-40};
+    const uint16_t VOLTAGE_FACTOR{10};
+
+    millivolts voltage{0};
+    celsius temperature{0};
+    double heater_factor_{0};
+    int id_{0};
+    double break_probability_{0.01};
+    bool is_broken{};
 };
 
 #endif

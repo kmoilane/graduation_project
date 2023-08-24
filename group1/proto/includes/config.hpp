@@ -13,7 +13,7 @@ public:
     json data;
 
     Configuration(std::string&& path) : filepath(path) {
-         std::ifstream file(filepath);
+        std::ifstream file(filepath);
         data = json::parse(file);
     }
     ~Configuration() {}

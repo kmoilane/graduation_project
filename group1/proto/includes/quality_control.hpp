@@ -61,7 +61,7 @@ public:
 
     // returns qualified objects represented by a bitmask
     // previously computed value is returned until new one becomes available
-    uint16_t get_output(){
+    uint16_t get_output() const {
         return result;
     }
 

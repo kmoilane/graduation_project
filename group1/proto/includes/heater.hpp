@@ -119,7 +119,7 @@ public:
         }
     }
 
-    uint8_t get_state(){
+    uint8_t get_state() const {
         std::bitset<sizeof(uint8_t) * 8> bitrepr;
         for (size_t i = 0; i < elements.size(); i++){
             bitrepr[i] = elements[i].state;
@@ -141,15 +141,15 @@ public:
         update();
     }
 
-    celsius power_to_celsius(watts power){
+    celsius power_to_celsius(watts power) const {
         return (power / max_power) * temperature_max;
     }
 
-    celsius get_temperature(){
+    celsius get_temperature() const {
         return temperature;
     }
 
-    celsius get_power(){
+    celsius get_power() const {
         return power_level;
     }
 
@@ -161,7 +161,7 @@ public:
     }
 
     // applies linear probability of success on power range (0 - 3000 w) 
-    int process(int product_state){
+    int process(int product_state) const {
         if (product_state == 1){
             double success_prob = power_level / 3000.0;
             return rand_between::rand_between(0.0, 1.0) < success_prob;
