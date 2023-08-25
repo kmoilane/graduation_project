@@ -10,6 +10,7 @@
 #include "config.hpp"
 #include "quality_control.hpp"
 #include "devices.hpp"
+#include "cooler.hpp"
 
 struct Simulation
 {
@@ -21,11 +22,24 @@ struct Simulation
 
     AmbientTemperature ambient_temperature {20};
     HeaterUnits heater {0b00000000};
+    Cooler cooler {0b00000001};
     QualityControl q_control;
     Conveyor conveyor;
+    Bolter bolter;
+    Shaper shaper;
 
-    // Init sensor 
-   std::vector<TemperatureSensor> temp_sensors{{0.4, 0, 50.0}, {0.45, 1, 0.01}, {0.5, 2, 0.01}, {0.45, 3, 0.01}, {0.4, 4, 0.01}, {0.35, 5, 0.01}, {0.3, 6, 0.01}, {0.25, 7, 0.01}, {0.2, 8, 0.01}, {0.15, 9, 0.01}};
+
+    // Init sensors 
+   std::vector<TemperatureSensor> temp_sensors{{0.4, 0, 0.0},
+                                                {0.45, 1, 0.0},
+                                                {0.5, 2, 0.0},
+                                                {0.45, 3, 0.0},
+                                                {0.4, 4, 0.0},
+                                                {0.35, 5, 0.0},
+                                                {0.3, 6, 0.0},
+                                                {0.25, 7, 0.0},
+                                                {0.2, 8, 0.0},
+                                                {0.15, 9, 0.0}};
 
     // average temperature of sensors
     celsius get_average_temperature()
@@ -38,10 +52,6 @@ struct Simulation
 
         return average / temp_sensors.size();
     }
-
-    Bolter bolter;
-    Shaper shaper;
-    Cooler cooler;
 
     // initialize variables from file
     Simulation(Configuration& config){
@@ -58,7 +68,6 @@ struct Simulation
         stages[2] = shaper.process(stages[2]);
         stages[3] = bolter.process(stages[3]);
 
-        // TODO conveyors u_speed not available
         q_control.apply_camera(conveyor.get_upm_current(), stages.back());
 
         // shift elements to a new position and add a new item to the production line
@@ -76,7 +85,7 @@ struct Simulation
     {
         for (auto& sensor : temp_sensors)
         {
-            sensor.update(ambient_temperature.get_temperature(), heater.get_temperature(), conveyor.get_temperature());
+            sensor.update(ambient_temperature.get_temperature(), heater.get_temperature(), conveyor.get_temperature(), cooler.get_temperature());
         }
     };
 

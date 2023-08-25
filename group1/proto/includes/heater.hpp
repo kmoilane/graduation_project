@@ -7,7 +7,7 @@
 #include <chrono>
 #include <algorithm>
 #include <bitset>
-#include <iostream>
+#include <nlohmann/json.hpp>
 
 class HeaterElement
 {
@@ -62,7 +62,7 @@ public:
         else if (power >= power_max && new_power >= power_max){
             duration_on_max_power_ms += duration; 
         }
-        // power drop below max level
+        // power dropped below max level
         else {
             duration_on_max_power_ms = 0;
         }
@@ -72,10 +72,7 @@ public:
             double prob = rand_between::rand_between(0.0, 1.0);
             double prob2 = (duration_on_max_power_ms / double(breakdown_time * 1000.0));
             is_functioning = prob > prob2;
-
-            if (!is_functioning){
-                state = false;
-            }
+            state = !is_functioning;
         }
 
         power = std::clamp(new_power, power_min, power_max);
@@ -127,20 +124,6 @@ public:
         return uint8_t(bitrepr.to_ulong());
     }
 
-    // manually set power levels to elements
-    template<size_t S = 0, typename T, typename... Args>
-    void force_power_levels(T power, Args... args){
-        static_assert(std::is_floating_point_v<T> || std::is_integral_v<T>);
-        static_assert(sizeof...(args) < std::tuple_size<decltype(elements)>::value);
-
-        if constexpr(sizeof...(args) > 0){
-            elements[S].power = power;
-            force_power_levels<S+1>(args...);
-        }
-        elements[S].power = power;
-        update();
-    }
-
     celsius power_to_celsius(watts power) const {
         return (power / max_power) * temperature_max;
     }
@@ -153,20 +136,38 @@ public:
         return power_level;
     }
 
-    bool configure(Configuration &config)
-    {
-
-        temperature_max = config.data["Simulation"]["Heater"]["temperature_max"];
-        return true;
+    void configure(Configuration &config){
+        auto config_max_temp = config.data["Simulation"]["Heater"]["temperature_max"];
+        if (!config_max_temp.is_null())
+        {
+            if (config_max_temp < 1){
+                throw std::invalid_argument("Heater max temperature can't be below 1 (set in configuration file)");
+            }
+            temperature_max = config_max_temp;
+        }
     }
 
     // applies linear probability of success on power range (0 - 3000 w) 
     int process(int product_state) const {
         if (product_state == 1){
-            double success_prob = power_level / 3000.0;
+            double success_prob = (power_level - 3000.0) / (max_power - 3000.0);
             return rand_between::rand_between(0.0, 1.0) < success_prob;
         }
         return product_state;
+    }
+
+    // manually set power levels to elements
+    template<size_t S = 0, typename T, typename... Args>
+    void force_power_levels(T power, Args... args){
+        static_assert(std::is_floating_point_v<T> || std::is_integral_v<T>);
+        static_assert(sizeof...(args) < std::tuple_size<decltype(elements)>::value);
+
+        if constexpr(sizeof...(args) > 0){
+            elements[S].power = power;
+            force_power_levels<S+1>(args...);
+        }
+        elements[S].power = power;
+        update();
     }
 
 };

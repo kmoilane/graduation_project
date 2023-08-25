@@ -48,14 +48,19 @@ public:
                 qc_storage.clear();
             }
 
-            bool product_state = (item == 1);
-            double prob = product_state ? false_negative_prob : false_positive_prob;
-
             // apply quality control error to product
-            product_state = (rand_between::rand_between(0.0, 1.0) > prob);
+            bool product_state = (item == 1);
+            if (product_state == 1)
+            {
+                product_state -= (rand_between::rand_between(0.0, 1.0) < false_negative_prob);
+            }
+            else{
+                product_state += (rand_between::rand_between(0.0, 1.0) < false_positive_prob);
+            }
 
             // auto fail if speed too fast for the camera or camera state off
-            qc_storage.push_front((convoyer_speed < qc_speed_max) && product_state && state);
+            qc_storage.push_front(!((convoyer_speed < qc_speed_max) && product_state && state));
+            int a = 0;
         }
     }
 
@@ -65,8 +70,8 @@ public:
         return result;
     }
 
-    void set_state(bool new_state){
-        state = new_state;
+    void set_state(uint8_t new_state){
+        state = (new_state == 1);
     }
         
 };

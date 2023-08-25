@@ -22,11 +22,11 @@ public:
 
     const celsius get_voltage() const
     {
-        std::cout << "voltage: " << voltage << "\n";
+        //std::cout << "voltage: " << voltage << "\n";
         return voltage;
     }
 
-    void update(celsius ambient_temp, celsius heater_temp, celsius conveyor_temp)
+    void update(celsius ambient_temp, celsius heater_temp, celsius conveyor_temp, celsius cooler_temp)
     {
         if (is_broken)
         {
@@ -40,7 +40,7 @@ public:
         }
         else
         {
-            celsius tmp = ambient_temp + heater_temp * heater_factor_ + conveyor_temp + SENSOR_TEMP;
+            celsius tmp = ambient_temp + (heater_temp * heater_factor_) + conveyor_temp + SENSOR_TEMP + cooler_temp;
             if (tmp < MIN_TEMP)
             {
                 temperature = MIN_TEMP;
@@ -55,7 +55,7 @@ public:
             }
             voltage = VOLTAGE_FACTOR * temperature;
         }
-        std::cout << "sensor " << id_ << ": " << temperature << "\n";
+        //std::cout << "sensor " << id_ << ": " << temperature << "\n";
     }
 
 private:

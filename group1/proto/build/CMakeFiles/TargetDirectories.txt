@@ -1,0 +1,7 @@
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/Simulation.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/controller.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/edit_cache.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/rebuild_cache.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/shm/CMakeFiles/shm.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/shm/CMakeFiles/edit_cache.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/shm/CMakeFiles/rebuild_cache.dir
