@@ -4,22 +4,24 @@
 #include "units.hpp"
 #include "config.hpp"
 #include <array>
-#include <chrono>
 #include <algorithm>
 #include <bitset>
 #include <nlohmann/json.hpp>
+#include "product.hpp"
+
 
 class HeaterElement
 {
 
 private:
-    time_stamp last_update_time;
+    const int breakdown_time_ms             {60'000};
+    int random_breakdown_point_ms           {generate_rand_breadown_point()};
     int duration_on_max_power_ms            {0};
-    const seconds breakdown_time            {60};
     const watts power_increase_1s           {10};
     const watts power_decrease_1s           {5};
 
 public:
+    int step_time_ms                        {100};
     const watts power_min                   {0};
     const watts power_max                   {2000};
 
@@ -33,55 +35,48 @@ public:
     // new control signal received
     // will not respond to activating commands if gets broken
     void set_state(bool new_state){
-        if (is_functioning){
-            state = new_state;
-            last_update_time = std::chrono::high_resolution_clock::now();
-        }
+        state = new_state && is_functioning;
     }
 
     // updates element's power level
     void update(){
 
-        // update power
-        time_stamp end = std::chrono::high_resolution_clock::now();
-        int duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - last_update_time).count();
-
         watts new_power {power};
         if(state == true){
-            new_power += (duration / 1000.0) * power_increase_1s;
+            new_power += (step_time_ms / 1000.0) * power_increase_1s;
         }
         else{
-            new_power -= (duration / 1000.0) * power_decrease_1s;
+            new_power -= (step_time_ms / 1000.0) * power_decrease_1s;
         }
     
-        // first time power reached max level
-        if (power < power_max && new_power >= power_max){
-            duration_on_max_power_ms = 0;
-        }
         // power remained at max level
-        else if (power >= power_max && new_power >= power_max){
-            duration_on_max_power_ms += duration; 
+        if ((power >= power_max) && (new_power >= power_max)){
+            duration_on_max_power_ms += step_time_ms; 
         }
         // power dropped below max level
-        else {
+        else if((power >= power_max) && (new_power < power_max)){
             duration_on_max_power_ms = 0;
+            random_breakdown_point_ms = generate_rand_breadown_point();
         }
 
         // there is a chance of element breakdown
-        if(duration_on_max_power_ms > 0){
-            double prob = rand_between::rand_between(0.0, 1.0);
-            double prob2 = (duration_on_max_power_ms / double(breakdown_time * 1000.0));
-            is_functioning = prob > prob2;
-            state = !is_functioning;
+        if(is_functioning && (duration_on_max_power_ms > random_breakdown_point_ms)){
+            state = is_functioning = false;
         }
 
+        // clamp power between 0 and max
         power = std::clamp(new_power, power_min, power_max);
-        last_update_time = end;
+    }
+
+    int generate_rand_breadown_point(){
+        return rand_between::rand_between(0, breakdown_time_ms);
     }
 };
 
+namespace devices
+{
 
-class HeaterUnits
+class Heater
 {
 
 private:
@@ -93,7 +88,7 @@ private:
 
 public:
 
-    HeaterUnits(uint8_t initial_states) {
+    Heater(uint8_t initial_states) {
         set_state(initial_states);
     }
 
@@ -145,13 +140,23 @@ public:
             }
             temperature_max = config_max_temp;
         }
+
+        // get step time from configuration
+        auto config_step_time = config.data["Simulation"]["step_time_ms"];
+        int step_time_ms = config_step_time.is_null() ? 100 : int(config_step_time);
+        for (auto &&element : elements){
+            element.step_time_ms = step_time_ms;
+        }
+        
     }
 
     // applies linear probability of success on power range (0 - 3000 w) 
-    int process(int product_state) const {
-        if (product_state == 1){
+    ProductState process(ProductState product_state) const {
+        if (product_state == ProductState::good){
             double success_prob = (power_level - 3000.0) / (max_power - 3000.0);
-            return rand_between::rand_between(0.0, 1.0) < success_prob;
+            if (rand_between::rand_between(0.0, 1.0) > success_prob){
+                return ProductState::bad;
+            }
         }
         return product_state;
     }
@@ -172,5 +177,6 @@ public:
 
 };
 
+} // namespace devices
 
 #endif // HEATER

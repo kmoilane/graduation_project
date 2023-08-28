@@ -10,37 +10,39 @@
 #include "config.hpp"
 #include "quality_control.hpp"
 #include "devices.hpp"
+#include "product.hpp"
 #include "cooler.hpp"
 
 struct Simulation
 {
     int speed_multiplier {1};
 
-
-    // status of objects in production line stages (-1 = not present, 0 = invalid, 1 = valid)
-    std::array<int, 4> stages {-1, -1, -1, -1};
+    std::array<ProductState, 4> stages {ProductState::not_present,
+                                        ProductState::not_present,
+                                        ProductState::not_present,
+                                        ProductState::not_present};
 
     AmbientTemperature ambient_temperature {20};
-    HeaterUnits heater {0b00000000};
-    Cooler cooler {0b00000001};
-    QualityControl q_control;
-    Conveyor conveyor;
-    Bolter bolter;
-    Shaper shaper;
+    devices::Heater heater {0b00000000};
+    devices::Cooler cooler {0b00000000};
+    devices::QualityControl quality_control {0b00000000};
+    devices::Bolter bolter;
+    devices::Shaper shaper;
+    devices::Conveyor conveyor;
+
 
 
     // Init sensors 
-   std::vector<TemperatureSensor> temp_sensors{{0.4, 0, 0.0},
-                                                {0.45, 1, 0.0},
-                                                {0.5, 2, 0.0},
-                                                {0.45, 3, 0.0},
-                                                {0.4, 4, 0.0},
-                                                {0.35, 5, 0.0},
-                                                {0.3, 6, 0.0},
-                                                {0.25, 7, 0.0},
-                                                {0.2, 8, 0.0},
-                                                {0.15, 9, 0.0}};
-
+   std::vector<TemperatureSensor> temp_sensors{{0.40},
+                                               {0.45},
+                                               {0.50},
+                                               {0.45},
+                                               {0.40},
+                                               {0.35},
+                                               {0.30},
+                                               {0.25},
+                                               {0.20},
+                                               {0.15}};
     // average temperature of sensors
     celsius get_average_temperature()
     {
@@ -58,6 +60,14 @@ struct Simulation
         conveyor.configure(config);
         heater.configure(config);
         ambient_temperature.configure(config);
+        bolter.configure(config);
+        shaper.configure(config);
+        quality_control.configure(config);
+        cooler.configure(config);
+        for(auto& sensor : temp_sensors)
+        {
+            sensor.configure(config);
+        }
     };
 
     // shift a product one step forward
@@ -68,17 +78,11 @@ struct Simulation
         stages[2] = shaper.process(stages[2]);
         stages[3] = bolter.process(stages[3]);
 
-        q_control.apply_camera(conveyor.get_upm_current(), stages.back());
+        quality_control.process(conveyor.get_upm_current(), stages.back());
 
         // shift elements to a new position and add a new item to the production line
         std::rotate(stages.rbegin(), stages.rbegin() - 1, stages.rend());
-        stages[0] = 1;
-    }
-
-    void random_sensor_breakdown(){}
-    void random_conveyor_breakdown()
-    {
-        conveyor.check_breakpoint(get_average_temperature());
+        stages[0] = ProductState::good;
     }
 
     void update_sensors()

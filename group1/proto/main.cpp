@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <deque>
+#include <bitset>
 #include <array>
 #include <chrono>
 #include <thread>
@@ -33,7 +34,7 @@ public:
         sim.conveyor.set_speed_target(shm.read_conveyor_target_speed());
         sim.heater.set_state(shm.read_heaters());
         sim.cooler.set_state(shm.read_cooler());
-        sim.q_control.set_state(shm.read_camera_status());
+        sim.quality_control.set_state(shm.read_camera_status());
     }
 
     // send simulation variables here
@@ -46,127 +47,139 @@ public:
             shm.set_temperature_sensor(i + 1, sim.temp_sensors[i].get_voltage());
         }
 
-        shm.set_qc_camera_feed(sim.q_control.get_output());
+    }
+    void send_qc_feed(const Simulation& sim)
+    {
+        shm.set_qc_camera_feed(sim.quality_control.get_output());
     }
 };
 
+void print_simulation(Simulation& sim)
+{
+    milliseconds loop_time = 1000;
+    time_stamp start_time{};
+    time_stamp end_time{};
+    milliseconds sleep_time{};
+    while (true)
+    {
+        start_time = std::chrono::high_resolution_clock::now();
+        system("clear");
+        std::cout   << std::setw(10) << "upm"        << std::setw(8) << " || " 
+                    << std::setw(10) << "speed"      << std::setw(8) << " || "
+                    << std::setw(10) << "heater W"   << std::setw(8) << " || " 
+                    << std::setw(10) << "avg temp"   << std::setw(8) << " || "
+                    << std::setw(16) << "qc"         << std::setw(8) << " || "
+                    << std::setw(16) << "heater on"  << std::setw(8) << " || "
+                    << std::setw(16) << "ambient"    << std::setw(8) << " || "
+                    << std::setw(10) << "heater temp"<< std::setw(8) << " || " 
+                    << std::setw(10) << "steps"      << std::setw(8) << " || " << '\n' << '\n';
+
+        std::cout   << std::setw(10) << sim.conveyor.get_upm_current()      << std::setw(8) << " || "
+                    << std::setw(10) << int(sim.conveyor.get_speed_current())         << std::setw(8) << " || "
+                    << std::setw(10) << sim.heater.get_power()                        << std::setw(8) << " || "
+                    << std::setw(10) << sim.get_average_temperature()                 << std::setw(8) << " || "
+                    << std::setw(16) << std::bitset<16>(sim.quality_control.get_output())   << std::setw(8) << " || "
+                    << std::setw(16) << std::bitset<8>(sim.heater.get_state())        << std::setw(8) << " || "
+                    << std::setw(16) << sim.ambient_temperature.get_temperature()     << std::setw(8) << " || "
+                    << std::setw(10) << sim.heater.get_temperature()                  << std::setw(9) << " || " << '\n';
+
+        end_time = std::chrono::high_resolution_clock::now();
+        auto diff = end_time - start_time;
+        auto diff_ms = std::chrono::duration_cast<std::chrono::milliseconds>(diff);
+
+        sleep_time = loop_time - diff_ms.count();
+        if (sleep_time < 0)
+            sleep_time = 0;
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
+    }
+}
+
+void update_simulation(Simulation& sim, Communicator& communicator, double time_multiplier)
+{
+    milliseconds loop_time = 1000;
+    time_stamp start_time{};
+    time_stamp end_time{};
+    milliseconds sleep_time{};
+
+    while (true)
+    {
+        start_time = std::chrono::high_resolution_clock::now();
+
+        sim.update_heaters(/* time_multiplier */);     // make update based on propability or/and time
+        sim.update_sensors(/* time_multiplier */);     // make update based on propability or/and time
+        sim.conveyor.update(time_multiplier);    // make update based on propability or/and time
+        sim.cooler.update(/* time_multiplier */);
+        sim.ambient_temperature.update(/* time_multiplier */);
+        sim.conveyor.check_breakpoint(sim.get_average_temperature());
+
+        communicator.send(sim);   // ideally in an another thread
+        communicator.listen(sim); // ideally in an another thread
+
+        end_time = std::chrono::high_resolution_clock::now();
+        auto diff = end_time - start_time;
+        auto diff_ms = std::chrono::duration_cast<std::chrono::milliseconds>(diff);
+        
+        sleep_time = loop_time * time_multiplier - diff_ms.count();
+        if (sleep_time < 0)
+            sleep_time = 0;
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time)); 
+    }
+}
 
 int main(int argc, char const *argv[])
 {
-    // for testing purposes
-    // final simulation must take account realtime operation
-
-    std::string path{};
-    if (argc == 2)
-        path = argv[1];
-
     
-    Configuration config("../config/config_full.json");
+    Configuration config("config/config_full.json");
     Simulation sim(config);
     Communicator communicator;
-
-    auto start = std::chrono::high_resolution_clock::now();
 
     sim.heater.set_state(0b00000111);
     sim.heater.force_power_levels(1500, 1500, 1500);
-
-    sim.q_control.set_state(true);
-
-
-    std::cout   << std::setw(10) << "upm"        << std::setw(8) << " || " 
-                << std::setw(10) << "speed"      << std::setw(8) << " || "
-                << std::setw(10) << "heater W"   << std::setw(8) << " || " 
-                << std::setw(10) << "avg temp"   << std::setw(8) << " || "
-                << std::setw(16) << "qc"         << std::setw(8) << " || "
-                << std::setw(16) << "heater on"  << std::setw(8) << " || "
-                << std::setw(16) << "ambient"    << std::setw(8) << " || "
-                << std::setw(10) << "time ms"    << std::setw(8) << " || "
-                << std::setw(10) << "heater temp"<< std::setw(8) << " || " << '\n' << '\n'; 
-
-
-    std::cout << std::setprecision(2) << std::fixed;
-
-    int sleep_time;
-
-    for (size_t i = 0; i < 1000; i++)
-    {
-        auto end = std::chrono::high_resolution_clock::now();
-        int diff = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-
-        sim.step();               // final solution should check if step can be taken
-
-        sim.update_heaters();     // make update based on propability or/and time
-        sim.update_sensors();     // make update based on propability or/and time
-        sim.conveyor.update();    // make update based on propability or/and time
-        sim.cooler.update();
-        sim.ambient_temperature.update();
-
-        sim.random_conveyor_breakdown();
-        sim.random_sensor_breakdown();
-
-        communicator.send(sim);   // ideally in a another thread
-        communicator.listen(sim); // ideally in a another thread
-
-        std::cout << std::setw(10) << sim.conveyor.get_upm_current()                << std::setw(8) << " || "
-                  << std::setw(10) << int(sim.conveyor.get_speed_current())         << std::setw(8) << " || "
-                  << std::setw(10) << sim.heater.get_power()                        << std::setw(8) << " || "
-                  << std::setw(10) << sim.get_average_temperature()                 << std::setw(8) << " || "
-                  << std::setw(10) << std::bitset<16>(sim.q_control.get_output())   << std::setw(8) << " || "
-                  << std::setw(10) << std::bitset<8>(sim.heater.get_state())        << std::setw(8) << " || "
-                  << std::setw(10) << sim.ambient_temperature.get_temperature()     << std::setw(8) << " || "
-                  << std::setw(10) << diff                                          << std::setw(8) << " || "
-                  << std::setw(10) << sim.heater.get_temperature()                  << std::setw(8) << " || " << '\n';
-
-        
-
-        sleep_time = 1000 / (sim.conveyor.get_upm_current() / 60 * 4);
-        std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time));
-    }
-    
-    return 0;
-}
-
-
-int main2(int argc, char const *argv[])
-{
-    
-    Configuration config("../config/config_full.json");
-    Simulation sim(config);
-    Communicator communicator;
-
-    sim.heater.set_state(0b00000111);
-    sim.heater.force_power_levels(0, 0, 0);
-    sim.q_control.set_state(true);
+    sim.quality_control.set_state(true);
 
     double time_multiplier = 1; // timestep = 100 ms
     int update_time = 100;
 
-    for (size_t timestep = 0; timestep < 1000; timestep++)
+    int steps = -2;
+    uint16_t conveyor_speed = sim.conveyor.get_upm_current();
+    milliseconds step_time = 60000 / conveyor_speed;
+    milliseconds sleep_time = 0;
+    time_stamp loop_start_time;
+    time_stamp loop_end_time;
+
+    std::cout << "Simulation running...\n";
+    //std::jthread print_thread(print_simulation, std::ref(sim));
+    std::jthread simulation_thread(update_simulation, std::ref(sim), std::ref(communicator), time_multiplier);
+
+    while (true)
     {
-/* 
-           
-        sim.update_heaters(time_multiplier);     // make update based on propability or/and time
-        sim.update_sensors(time_multiplier);     // make update based on propability or/and time
-        sim.conveyor.update(time_multiplier);    // make update based on propability or/and time
-        sim.cooler.update(time_multiplier);
-        sim.ambient_temperature.update(time_multiplier);
+        loop_start_time = std::chrono::high_resolution_clock::now();
 
+        conveyor_speed = sim.conveyor.get_upm_current();
+        if (conveyor_speed > 0)
+            step_time = 60000 / conveyor_speed;
+        else
+            step_time = 0;
 
-        if conveyor has moved enough 
-            sim.step();    
+        sim.step();    
+        steps++;
 
-        if enough time has passed 
-            communicator.send(sim);   // ideally in a another thread
-            communicator.listen(sim); // ideally in a another thread
+        if (steps % 16 == 0)
+        {
+            communicator.send_qc_feed(sim);
+        }
 
-
-            0.4         1                   0.5                   0.1
-        sleeptime = update_time  * time_multiplier - loopin alusta tähän pisteeseen
-        = loopin kesto 0.5 s
-
+        loop_end_time = std::chrono::high_resolution_clock::now();
+        auto diff = loop_end_time - loop_start_time;
+        auto diff_ms = std::chrono::duration_cast<std::chrono::milliseconds>(diff);
+        
+        sleep_time = step_time * time_multiplier - diff_ms.count();
+        if (sleep_time < 0)
+            sleep_time = 0;
 
         std::this_thread::sleep_for(std::chrono::milliseconds(sleep_time)); 
-        */
     }
     
     return 0;

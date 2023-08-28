@@ -3,77 +3,92 @@
 
 #include "units.hpp"
 #include "random_between.hpp"
-#include <deque>
-#include <array>
+#include "product.hpp"
 #include <algorithm>
-#include <bitset>
+#include <limits>
 
 
-// simulates a step (one object shift from a process to another) in production line
+// Simulates 16 bit Camera memory of defected products (1 == bad)
+struct CameraMemory
+{
+    const uint16_t init     {std::numeric_limits<uint16_t>::max()};
+    uint16_t cur_batch      {init};
+    uint16_t last_batch     {init};
+    uint16_t index          {0};
+
+    void update(ProductState product_state, bool camera_state){
+        if (index == sizeof(decltype(last_batch)) * 8){
+            last_batch = cur_batch;
+            index = cur_batch = 0;
+        }
+        
+        cur_batch |= static_cast<uint16_t>((product_state == ProductState::bad) || not camera_state) << index;
+        index += 1;
+    }
+};
+
+
+namespace devices
+{
+    
+// Simulates Quality Control (camera) at the end of the production line
 class QualityControl
 {
 
 private:
 
     bool state {false};
+    CameraMemory cam_memory;
+
     const speed qc_speed_max = 542; 
     const double false_positive_prob {0.005};
     const double false_negative_prob {0.01};
-    std::deque<bool> qc_storage;
-    uint16_t result {0};
-
-    // compute uint16 representation of the current batch
-    uint16_t get_int_repr(){
-        std::bitset<16> bits;
-        for (size_t i = 0; i < qc_storage.size(); i++){
-            bits[i] = qc_storage[i];
-        }
-        return uint16_t(bits.to_ulong());
-    }
 
 public:
 
-    QualityControl() {}
+    QualityControl(uint8_t initial_state) : state(initial_state) {}
     ~QualityControl() {}
 
+    void process(speed conveyor_speed, ProductState product_state){
 
-    void apply_camera(speed convoyer_speed, int item){
+        if (product_state != ProductState::not_present){
+            auto rvalue = rand_between::rand_between(0.0, 1.0);
 
-        // apply camera if there is an item in this stage [0 || 1]
-        if (item != -1){
-
-            // full storage must be cleared before next batch
-            if (qc_storage.size() == 16){
-                result = get_int_repr();
-                qc_storage.clear();
+            if (conveyor_speed > qc_speed_max){
+                product_state = ProductState::bad;
             }
 
-            // apply quality control error to product
-            bool product_state = (item == 1);
-            if (product_state == 1)
-            {
-                product_state -= (rand_between::rand_between(0.0, 1.0) < false_negative_prob);
+            else if (product_state == ProductState::bad && rvalue < false_positive_prob){
+                product_state == ProductState::good;
             }
-            else{
-                product_state += (rand_between::rand_between(0.0, 1.0) < false_positive_prob);
+            else if (product_state == ProductState::good && rvalue < false_negative_prob){
+                product_state == ProductState::bad;
             }
 
-            // auto fail if speed too fast for the camera or camera state off
-            qc_storage.push_front(!((convoyer_speed < qc_speed_max) && product_state && state));
-            int a = 0;
+            //std::cout << static_cast<int>(product_state) << '\n';
+            cam_memory.update(product_state, state);
         }
+
     }
 
     // returns qualified objects represented by a bitmask
     // previously computed value is returned until new one becomes available
     uint16_t get_output() const {
-        return result;
+        return cam_memory.last_batch;
     }
 
     void set_state(uint8_t new_state){
         state = (new_state == 1);
     }
-        
+    
+    void configure(Configuration &config){
+        auto config_state = config.data["Simulation"]["Camera"]["state"];
+        if (!config_state.is_null()){
+            state = config_state;
+        }
+    }
 };
+
+} // namespace devices
 
 #endif // QC

@@ -5,118 +5,122 @@
 #include "random_between.hpp"
 #include "units.hpp"
 #include <bitset>
-#include <chrono>
-
 #include <iostream>
+
+namespace devices
+{
+    
 
 class Cooler
 {
 public:
-    uint8_t state{};
-    Cooler(uint8_t initial_state)
-    {
-        state = initial_state;
+    bool state   {false};
+
+    Cooler(bool initial_state){
+        set_state(initial_state);
     }
 
-    void set_state(uint8_t new_state)
-    {
-        if(is_functioning)
-        {
-            if(new_state != state)
-            {
-                last_update_time = std::chrono::high_resolution_clock::now();
-                state = new_state;
-            }
-        }
+    void set_state(bool new_state){
+        state = new_state && is_functioning;
     }
 
-    void update()
-    { 
-        time_stamp end = std::chrono::high_resolution_clock::now();
-        int duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - last_update_time).count();
-        
+    void update(){ 
+
         watts new_power {power_current};
 
-        if(state == ON)
-        {
-            // duration 
-            new_power += (duration / 1000.0) * power_increase_1s;
+        // duration 
+        if(state == true){
+            new_power += (step_time_ms / 1000.0) * power_increase_1s;
         }
-        else
-        {
-            new_power -= (duration / 1000.0) * power_decrease_1s;
+        else{
+            new_power -= (step_time_ms / 1000.0) * power_decrease_1s;
         }
 
-        if(rand_between::rand_between(0.0, 100.0) < break_probability)
-        {
-           state = false;
-           is_functioning = false;
+        // power remained at max level
+        if ((power_current >= POWER_MAX) && (new_power >= POWER_MAX)){
+            duration_on_max_power_ms += step_time_ms; 
+        }
+        // power dropped below max level
+        else if((power_current >= POWER_MAX) && (new_power < POWER_MAX)){
+            duration_on_max_power_ms = 0;
+            random_breakdown_point_ms = generate_rand_breadown_point();
         }
 
-        power_current = std::clamp(new_power, POWER_MIN, power_max);
-        last_update_time = end;
+        // there is a chance of element breakdown
+        if(is_functioning && (duration_on_max_power_ms > random_breakdown_point_ms)){
+            state = is_functioning = false;
+        }
+
+        power_current = std::clamp(new_power, POWER_MIN, POWER_MAX);
         temperature_current = power_to_celsius(power_current);
-        //std::cout << "last update time: " << "\n";
-        //std::cout << "current power: " << power_current << "\n";
-        //std::cout << "current temp: " << temperature_current << "\n";
     }
 
     void configure(Configuration &config)
     {
         auto tmp_power_max = config.data["Simulation"]["Cooler"]["max_power"];
         auto tmp_probability = config.data["Simulation"]["Cooler"]["break_probability"];
-        if(!tmp_power_max.is_null())
-        {
-            if(tmp_power_max > 0 && tmp_power_max < 1000)
-            {
-                power_max = config.data["Simulation"]["Cooler"]["max_power"];
+        auto tmp_state = config.data["Simulation"]["Cooler"]["state"];
+        auto tmp_step_time = config.data["Simulation"]["step_time_ms"];
+
+        if(!tmp_power_max.is_null()){
+            if(tmp_power_max > 0 && tmp_power_max < 1000){
+                POWER_MAX = config.data["Simulation"]["Cooler"]["max_power"];
             }
             else{
                 throw std::invalid_argument("Power max has to be between 0-1000");
             }
         }  
-        if(!tmp_probability.is_null())
-        {
-            if(tmp_probability >= 0 && tmp_probability <= 100)
-            {
+        if(!tmp_probability.is_null()){
+            if(tmp_probability >= 0 && tmp_probability <= 100){
                 break_probability = tmp_probability;
             }
-            else
-            {
+            else{
                 throw std::invalid_argument("Probability has to be between 0-100 (set in configuration file)");
             }
-        }  
-
+        } 
+        
+        // get step time from configuration
+        step_time_ms = tmp_step_time.is_null() ? 100 : int(tmp_step_time);
+        // get init state from configuration
+        state = tmp_state.is_null() ? false : bool(tmp_state);
     }
 
     celsius power_to_celsius(watts power){
-        //std::cout << "power_to_celsius: " << power << "\n";
-        return (power/ power_max) * temperature_min;
+        return (power/ POWER_MAX) * temperature_min;
     }
 
-    celsius get_temperature()
-    {
-        //std::cout << "cooler: " << temperature_current << "\n";
+    celsius get_temperature(){
         return temperature_current;
     }
 
+    celsius get_power(){
+        return power_current;
+    }
+
+    int generate_rand_breadown_point(){
+        return rand_between::rand_between(0, breakdown_time_ms);
+    }
+
 private:
-    const watts POWER_MIN{0};
-    const uint8_t ON = 0b00000001;
-    const uint8_t OFF = 0b00000000;
+    int breakdown_time_ms           {60'000};;
+    int random_breakdown_point_ms   {generate_rand_breadown_point()};
+    int duration_on_max_power_ms    {0};
+    const watts POWER_MIN           {0};
+    int step_time_ms                {100};
+
     // configurable
-    watts power_max{500};
-    watts power_increase_1s {2.5};
-    watts power_decrease_1s {1.2};
-    double break_probability{0.0001};
-    celsius temperature_min {-10};
+    watts POWER_MAX                 {500};
+    watts power_increase_1s         {2.5};
+    watts power_decrease_1s         {1.2};
+    double break_probability        {0.0001};
+    celsius temperature_min         {-10};
 
-    time_stamp last_update_time{};
-    watts power_current{0};
-    celsius temperature_current{0};
-    bool is_functioning{true};
-
+    watts power_current             {0};
+    celsius temperature_current     {0};
+    bool is_functioning             {true};
 
 };
+
+} // namespace devices
 
 #endif

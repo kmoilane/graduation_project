@@ -7,11 +7,9 @@
 class TemperatureSensor
 {
 public:
-    TemperatureSensor(double heater_factor, int id, double break_probability)
+    TemperatureSensor(double heater_factor)
     {
         heater_factor_ = heater_factor;
-        id_ = id;
-        break_probability_ = break_probability;
         is_broken = false;
     }
 
@@ -58,6 +56,24 @@ public:
         //std::cout << "sensor " << id_ << ": " << temperature << "\n";
     }
 
+    
+    void configure(Configuration &config)
+    {
+        auto tmp_probability = config.data["Simulation"]["temperature_sensor"]["break_probability"];
+        if (!tmp_probability.is_null())
+        {
+            set_probability(tmp_probability);
+        }
+    }
+
+    void set_probability(double break_probability)
+    {
+        if (break_probability >= 0 && break_probability <= 100)
+        {
+            break_probability_ = break_probability;
+        }
+    }
+
 private:
     // voltage in millivolts
     const celsius SENSOR_TEMP{0.08};
@@ -68,8 +84,7 @@ private:
     millivolts voltage{0};
     celsius temperature{0};
     double heater_factor_{0};
-    int id_{0};
-    double break_probability_{0.01};
+    double break_probability_{0.0001};
     bool is_broken{};
 };
 
