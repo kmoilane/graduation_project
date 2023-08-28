@@ -1,0 +1,38 @@
+{
+    "Simulation" :
+    {
+        "step_time_ms" : 1000,
+        
+        "Conveyor" :
+        {
+            "speed_current": 200,
+            "speed_target": 200
+        },
+        "Heater" :
+        {
+            "temperature_max": 100
+        },
+        "Bolter" :
+        {
+            "state": true
+        },
+        "Shaper" :
+        {
+            "state": true
+        },
+        "Camera" :
+        {
+            "state": true
+        },
+        "Ambient_temperature" :
+        {
+            "ambient_temperature" : 23
+        },
+        "Cooler" :
+        {
+            "max_power" : 100,
+            "break_probability" : 0,
+            "state" : true
+        }
+    }
+}
