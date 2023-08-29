@@ -44,6 +44,11 @@ uint16_t simulation_shm_wrapper::read_qc_camera_feed() const
     return *(reinterpret_cast<uint16_t*>(value_ptr + 25));
 }
 
+uint8_t simulation_shm_wrapper::read_simulation_status() const
+{
+    return *(value_ptr + 27);
+}
+
 void simulation_shm_wrapper::set_conveyor_target_speed(uint8_t target_speed)
 {
     *(value_ptr + 21) = target_speed;
@@ -82,6 +87,11 @@ void simulation_shm_wrapper::set_conveyor_speed_sensor(uint8_t speed)
 void simulation_shm_wrapper::set_qc_camera_feed(uint16_t feed)
 {
     *(reinterpret_cast<uint16_t*>(value_ptr + 25)) = feed;
+}
+
+void simulation_shm_wrapper::set_camera_status(uint8_t status)
+{
+    *(value_ptr + 27) = status;
 }
 
 uint8_t simulation_shm_wrapper::read_conveyor_target_speed()

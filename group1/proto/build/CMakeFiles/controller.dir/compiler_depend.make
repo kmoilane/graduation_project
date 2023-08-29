@@ -203,13 +203,6 @@ CMakeFiles/controller.dir/controller/controller.cpp.o: ../controller/controller.
   /usr/include/x86_64-linux-gnu/bits/shmlba.h \
   /usr/include/x86_64-linux-gnu/bits/types/struct_shmid_ds.h \
   /usr/include/x86_64-linux-gnu/bits/types/struct_shmid64_ds.h \
-  /usr/include/X11/Xlib.h \
-  /usr/include/X11/X.h \
-  /usr/include/X11/Xfuncproto.h \
-  /usr/include/X11/Xosdefs.h \
-  /usr/include/X11/Xutil.h \
-  /usr/include/X11/keysym.h \
-  /usr/include/X11/keysymdef.h \
   /usr/include/c++/11/array \
   /usr/include/c++/11/utility \
   /usr/include/c++/11/bits/stl_relops.h \
@@ -551,12 +544,6 @@ CMakeFiles/controller.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/messages_members.h:
 
-/usr/include/x86_64-linux-gnu/c++/11/bits/time_members.h:
-
-/usr/include/c++/11/bits/locale_facets_nonio.h:
-
-/usr/include/x86_64-linux-gnu/sys/time.h:
-
 /usr/include/c++/11/backward/binders.h:
 
 /usr/include/c++/11/iostream:
@@ -615,21 +602,11 @@ CMakeFiles/controller.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 /usr/include/c++/11/bits/atomic_wait.h:
 
-/usr/include/c++/11/bits/shared_ptr.h:
-
-/usr/include/x86_64-linux-gnu/bits/semaphore.h:
-
-/usr/include/c++/11/bits/stl_construct.h:
-
 /usr/include/x86_64-linux-gnu/bits/struct_mutex.h:
 
 /usr/include/c++/11/bits/stl_iterator.h:
 
 /usr/include/linux/close_range.h:
-
-/usr/include/c++/11/locale:
-
-/usr/include/ctype.h:
 
 /usr/include/c++/11/bits/ranges_cmp.h:
 
@@ -737,8 +714,6 @@ CMakeFiles/controller.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h:
 
-/usr/include/X11/Xosdefs.h:
-
 /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h:
 
 ../shm/shm.cpp:
@@ -754,8 +729,6 @@ CMakeFiles/controller.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 /usr/include/c++/11/bits/exception_ptr.h:
 
 /usr/include/c++/11/ext/string_conversions.h:
-
-/usr/include/X11/Xlib.h:
 
 /usr/include/c++/11/bits/shared_ptr_base.h:
 
@@ -779,11 +752,21 @@ CMakeFiles/controller.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 /usr/include/c++/11/exception:
 
+/usr/include/c++/11/bits/shared_ptr.h:
+
+/usr/include/c++/11/bits/stl_construct.h:
+
+/usr/include/x86_64-linux-gnu/bits/semaphore.h:
+
 /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h:
 
 /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h:
 
 /usr/include/linux/errno.h:
+
+/usr/include/ctype.h:
+
+/usr/include/c++/11/locale:
 
 /usr/include/x86_64-linux-gnu/bits/stdio_lim.h:
 
@@ -824,8 +807,6 @@ CMakeFiles/controller.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 /usr/include/x86_64-linux-gnu/bits/types/mbstate_t.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/clock_t.h:
-
-/usr/include/X11/keysymdef.h:
 
 /usr/include/c++/11/cstring:
 
@@ -877,8 +858,6 @@ CMakeFiles/controller.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 /usr/include/x86_64-linux-gnu/sys/types.h:
 
-/usr/include/X11/keysym.h:
-
 /usr/include/c++/11/bits/ptr_traits.h:
 
 /usr/include/stdint.h:
@@ -890,6 +869,8 @@ CMakeFiles/controller.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 /usr/include/c++/11/bits/postypes.h:
 
 /usr/include/c++/11/stop_token:
+
+/usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
 
 /usr/include/c++/11/bits/fs_path.h:
 
@@ -944,8 +925,6 @@ CMakeFiles/controller.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 /usr/include/c++/11/chrono:
 
 /usr/include/stdio.h:
-
-/usr/include/X11/Xfuncproto.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h:
 
@@ -1031,12 +1010,6 @@ CMakeFiles/controller.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_shmid_ds.h:
 
-/usr/include/X11/X.h:
-
-/usr/include/x86_64-linux-gnu/bits/uintn-identity.h:
-
-/usr/include/X11/Xutil.h:
-
 /usr/include/c++/11/array:
 
 /usr/include/c++/11/bits/sstream.tcc:
@@ -1065,6 +1038,8 @@ CMakeFiles/controller.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h:
 
+/usr/include/x86_64-linux-gnu/c++/11/bits/time_members.h:
+
 /usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
 
 /usr/include/c++/11/string:
@@ -1089,6 +1064,8 @@ CMakeFiles/controller.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/unistd_ext.h:
 
+/usr/include/c++/11/bits/locale_facets_nonio.h:
+
 /usr/include/x86_64-linux-gnu/bits/syscall.h:
 
 /usr/include/c++/11/bits/cpp_type_traits.h:
@@ -1102,3 +1079,5 @@ CMakeFiles/controller.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 /usr/include/c++/11/bits/refwrap.h:
 
 /usr/include/c++/11/bits/semaphore_base.h:
+
+/usr/include/x86_64-linux-gnu/sys/time.h:

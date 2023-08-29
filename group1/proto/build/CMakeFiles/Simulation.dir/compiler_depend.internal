@@ -4,6 +4,7 @@
 CMakeFiles/Simulation.dir/main.cpp.o
  /home/juho/Desktop/conveyor/graduation_project/group1/proto/main.cpp
  /usr/include/stdc-predef.h
+ /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/simulation.hpp
  /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/random_between.hpp
  /usr/include/c++/11/chrono
  /usr/include/c++/11/ratio
@@ -209,6 +210,7 @@ CMakeFiles/Simulation.dir/main.cpp.o
  /usr/include/c++/11/bit
  /usr/include/c++/11/pstl/glue_numeric_defs.h
  /usr/include/c++/11/pstl/execution_defs.h
+ /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/ambient_temperature.hpp
  /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/units.hpp
  /usr/include/nlohmann/json.hpp
  /usr/include/c++/11/algorithm
@@ -384,31 +386,23 @@ CMakeFiles/Simulation.dir/main.cpp.o
  /usr/include/nlohmann/ordered_map.hpp
  /usr/include/nlohmann/detail/macro_unscope.hpp
  /usr/include/nlohmann/thirdparty/hedley/hedley_undef.hpp
- /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/heater.hpp
- /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/units.hpp
  /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/config.hpp
  /usr/include/c++/11/fstream
  /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h
  /usr/include/c++/11/bits/fstream.tcc
  /usr/include/c++/11/iostream
- /usr/include/c++/11/bitset
- /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/ambient_temperature.hpp
- /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/random_between.hpp
- /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/conveyor.hpp
- /usr/include/c++/11/math.h
+ /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/utils.hpp
  /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/temperature_sensor.hpp
- /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/simulation.hpp
- /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/heater.hpp
- /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/ambient_temperature.hpp
  /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/conveyor.hpp
- /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/temperature_sensor.hpp
- /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/quality_control.hpp
- /usr/include/c++/11/deque
- /usr/include/c++/11/bits/stl_deque.h
- /usr/include/c++/11/bits/deque.tcc
  /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/devices.hpp
+ /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/product.hpp
+ /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/heater.hpp
+ /usr/include/c++/11/bitset
+ /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/quality_control.hpp
  /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/cooler.hpp
+ /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/communicator.hpp
+ /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/simulation.hpp
  /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/config.hpp
  /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.hpp
  /usr/include/x86_64-linux-gnu/sys/ipc.h
@@ -420,6 +414,8 @@ CMakeFiles/Simulation.dir/main.cpp.o
  /usr/include/x86_64-linux-gnu/bits/shmlba.h
  /usr/include/x86_64-linux-gnu/bits/types/struct_shmid_ds.h
  /usr/include/x86_64-linux-gnu/bits/types/struct_shmid64_ds.h
+ /home/juho/Desktop/conveyor/graduation_project/group1/proto/includes/utils.hpp
+ /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.hpp
  /usr/include/c++/11/thread
  /usr/include/c++/11/stop_token
  /usr/include/c++/11/atomic

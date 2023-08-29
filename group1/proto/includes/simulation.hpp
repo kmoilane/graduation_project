@@ -2,44 +2,71 @@
 #define SIMULATION_HPP
 
 #include "random_between.hpp"
-#include "units.hpp"
-#include "heater.hpp"
 #include "ambient_temperature.hpp"
-#include "conveyor.hpp"
 #include "temperature_sensor.hpp"
+#include "units.hpp"
+#include "conveyor.hpp"
 #include "config.hpp"
-#include "quality_control.hpp"
 #include "devices.hpp"
-#include "cooler.hpp"
+#include "product.hpp"
+#include "config.hpp"
 
 struct Simulation
 {
-    int speed_multiplier {1};
 
+private:
 
-    // status of objects in production line stages (-1 = not present, 0 = invalid, 1 = valid)
-    std::array<int, 4> stages {-1, -1, -1, -1};
+    int             speed_multiplier    {1};
+    milliseconds    step_duration       {100}; 
+    double          prev_offset         {0};
 
-    AmbientTemperature ambient_temperature {20};
-    HeaterUnits heater {0b00000000};
-    Cooler cooler {0b00000001};
-    QualityControl q_control;
-    Conveyor conveyor;
-    Bolter bolter;
-    Shaper shaper;
+public:
+    // Product states at production line steps
+    std::array<ProductState, 4> stages {ProductState::good,
+                                        ProductState::not_present,
+                                        ProductState::not_present,
+                                        ProductState::not_present};
+    // System devices
+    AmbientTemperature ambient_temperature     {20};
+    devices::Heater heater                     {false};
+    devices::Cooler cooler                     {false};
+    devices::QualityControl quality_control    {false};
+    devices::Bolter bolter                     {false};
+    devices::Shaper shaper                     {false};
+    devices::Conveyor conveyor;
 
 
     // Init sensors 
-   std::vector<TemperatureSensor> temp_sensors{{0.4, 0, 0.0},
-                                                {0.45, 1, 0.0},
-                                                {0.5, 2, 0.0},
-                                                {0.45, 3, 0.0},
-                                                {0.4, 4, 0.0},
-                                                {0.35, 5, 0.0},
-                                                {0.3, 6, 0.0},
-                                                {0.25, 7, 0.0},
-                                                {0.2, 8, 0.0},
-                                                {0.15, 9, 0.0}};
+   std::vector<TemperatureSensor> temp_sensors{{0.40},
+                                               {0.45},
+                                               {0.50},
+                                               {0.45},
+                                               {0.40},
+                                               {0.35},
+                                               {0.30},
+                                               {0.25},
+                                               {0.20},
+                                               {0.15}};
+
+    // initialize variables from file
+    Simulation(Configuration& config){
+        conveyor.configure(config);
+        heater.configure(config);
+        ambient_temperature.configure(config);
+        bolter.configure(config);
+        shaper.configure(config);
+        quality_control.configure(config);
+        cooler.configure(config);
+
+        for(auto& sensor : temp_sensors)
+        {
+            sensor.configure(config);
+        }
+
+        auto config_duration = config.data["Simulation"]["step_time_ms"];
+        step_duration = config_duration.is_null() ? 100 : int(config_duration);
+        
+    };                                      
 
     // average temperature of sensors
     celsius get_average_temperature()
@@ -53,49 +80,52 @@ struct Simulation
         return average / temp_sensors.size();
     }
 
-    // initialize variables from file
-    Simulation(Configuration& config){
-        conveyor.configure(config);
-        heater.configure(config);
-        ambient_temperature.configure(config);
-    };
+    // simulate products going through the manufacturing
+    void step(milliseconds step_time = -1){
 
-    // shift a product one step forward
-    void step(){
-
-        // process item in current new stage
-        stages[1] = heater.process(stages[1]);
-        stages[2] = shaper.process(stages[2]);
-        stages[3] = bolter.process(stages[3]);
-
-        q_control.apply_camera(conveyor.get_upm_current(), stages.back());
-
-        // shift elements to a new position and add a new item to the production line
-        std::rotate(stages.rbegin(), stages.rbegin() - 1, stages.rend());
-        stages[0] = 1;
-    }
-
-    void random_sensor_breakdown(){}
-    void random_conveyor_breakdown()
-    {
-        conveyor.check_breakpoint(get_average_temperature());
-    }
-
-    void update_sensors()
-    {
-        for (auto& sensor : temp_sensors)
-        {
-            sensor.update(ambient_temperature.get_temperature(), heater.get_temperature(), conveyor.get_temperature(), cooler.get_temperature());
+        if (step_time < 0){
+            step_time = step_duration;
         }
-    };
 
-    void update_heaters(){
-        heater.update();
-    };
+        // Units gone through single step in manufacturing process since last step
+        double steps = (((conveyor.get_upm_current() / 60'000) * step_time) * 3.0) + prev_offset;
 
-    // simulates 'natural' ambient temperature change over time
-    void update_ambient_temperature(){
-        ambient_temperature.update();
+        for (size_t i = 0; i < std::floor(steps); i++){
+    
+            // process item in current new stage
+            stages[1] = heater.process(stages[1]);
+            stages[2] = shaper.process(stages[2]);
+            stages[3] = bolter.process(stages[3]);
+            quality_control.process(conveyor.get_upm_current(), stages.back());
+
+            // shift elements to a new position and add a new item to the production line
+            std::rotate(stages.rbegin(), stages.rbegin() - 1, stages.rend());
+            stages[0] = ProductState::good;
+        }
+
+        prev_offset = steps - std::floor(steps);
+
+    }
+
+    // set internal updates to all devices
+    void update(milliseconds step_time = -1){
+
+        if (step_time < 0){
+            step_time = step_duration;
+        }
+        
+        heater.update(step_time);
+        conveyor.update(step_time);    
+        cooler.update(step_time);
+        ambient_temperature.update(step_time); 
+        conveyor.check_breakpoint(get_average_temperature());
+
+        for (auto& sensor : temp_sensors){
+            sensor.update(ambient_temperature.get_temperature(),
+                          heater.get_temperature(),
+                          conveyor.get_temperature(),
+                          cooler.get_temperature());
+        }
     }
 
 };

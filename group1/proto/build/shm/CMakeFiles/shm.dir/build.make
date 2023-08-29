@@ -73,15 +73,15 @@ shm/CMakeFiles/shm.dir/shm.cpp.o: shm/CMakeFiles/shm.dir/flags.make
 shm/CMakeFiles/shm.dir/shm.cpp.o: ../shm/shm.cpp
 shm/CMakeFiles/shm.dir/shm.cpp.o: shm/CMakeFiles/shm.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object shm/CMakeFiles/shm.dir/shm.cpp.o"
-	cd /home/juho/Desktop/conveyor/graduation_project/group1/proto/build/shm && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT shm/CMakeFiles/shm.dir/shm.cpp.o -MF CMakeFiles/shm.dir/shm.cpp.o.d -o CMakeFiles/shm.dir/shm.cpp.o -c /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp
+	cd /home/juho/Desktop/conveyor/graduation_project/group1/proto/build/shm && /usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT shm/CMakeFiles/shm.dir/shm.cpp.o -MF CMakeFiles/shm.dir/shm.cpp.o.d -o CMakeFiles/shm.dir/shm.cpp.o -c /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp
 
 shm/CMakeFiles/shm.dir/shm.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/shm.dir/shm.cpp.i"
-	cd /home/juho/Desktop/conveyor/graduation_project/group1/proto/build/shm && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp > CMakeFiles/shm.dir/shm.cpp.i
+	cd /home/juho/Desktop/conveyor/graduation_project/group1/proto/build/shm && /usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp > CMakeFiles/shm.dir/shm.cpp.i
 
 shm/CMakeFiles/shm.dir/shm.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/shm.dir/shm.cpp.s"
-	cd /home/juho/Desktop/conveyor/graduation_project/group1/proto/build/shm && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp -o CMakeFiles/shm.dir/shm.cpp.s
+	cd /home/juho/Desktop/conveyor/graduation_project/group1/proto/build/shm && /usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp -o CMakeFiles/shm.dir/shm.cpp.s
 
 # Object files for target shm
 shm_OBJECTS = \

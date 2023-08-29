@@ -14,6 +14,7 @@ public:
     std::string filepath;
     json data;
 
+    Configuration() = default;
     Configuration(std::string&& path) : filepath(path) {
         std::ifstream file(filepath);
         try{

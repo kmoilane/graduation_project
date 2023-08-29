@@ -73,29 +73,29 @@ CMakeFiles/controller.dir/controller/controller.cpp.o: CMakeFiles/controller.dir
 CMakeFiles/controller.dir/controller/controller.cpp.o: ../controller/controller.cpp
 CMakeFiles/controller.dir/controller/controller.cpp.o: CMakeFiles/controller.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/controller.dir/controller/controller.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/controller.dir/controller/controller.cpp.o -MF CMakeFiles/controller.dir/controller/controller.cpp.o.d -o CMakeFiles/controller.dir/controller/controller.cpp.o -c /home/juho/Desktop/conveyor/graduation_project/group1/proto/controller/controller.cpp
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/controller.dir/controller/controller.cpp.o -MF CMakeFiles/controller.dir/controller/controller.cpp.o.d -o CMakeFiles/controller.dir/controller/controller.cpp.o -c /home/juho/Desktop/conveyor/graduation_project/group1/proto/controller/controller.cpp
 
 CMakeFiles/controller.dir/controller/controller.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/controller.dir/controller/controller.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/juho/Desktop/conveyor/graduation_project/group1/proto/controller/controller.cpp > CMakeFiles/controller.dir/controller/controller.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/juho/Desktop/conveyor/graduation_project/group1/proto/controller/controller.cpp > CMakeFiles/controller.dir/controller/controller.cpp.i
 
 CMakeFiles/controller.dir/controller/controller.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/controller.dir/controller/controller.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/juho/Desktop/conveyor/graduation_project/group1/proto/controller/controller.cpp -o CMakeFiles/controller.dir/controller/controller.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/juho/Desktop/conveyor/graduation_project/group1/proto/controller/controller.cpp -o CMakeFiles/controller.dir/controller/controller.cpp.s
 
 CMakeFiles/controller.dir/shm/shm.cpp.o: CMakeFiles/controller.dir/flags.make
 CMakeFiles/controller.dir/shm/shm.cpp.o: ../shm/shm.cpp
 CMakeFiles/controller.dir/shm/shm.cpp.o: CMakeFiles/controller.dir/compiler_depend.ts
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/controller.dir/shm/shm.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/controller.dir/shm/shm.cpp.o -MF CMakeFiles/controller.dir/shm/shm.cpp.o.d -o CMakeFiles/controller.dir/shm/shm.cpp.o -c /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/controller.dir/shm/shm.cpp.o -MF CMakeFiles/controller.dir/shm/shm.cpp.o.d -o CMakeFiles/controller.dir/shm/shm.cpp.o -c /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp
 
 CMakeFiles/controller.dir/shm/shm.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/controller.dir/shm/shm.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp > CMakeFiles/controller.dir/shm/shm.cpp.i
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp > CMakeFiles/controller.dir/shm/shm.cpp.i
 
 CMakeFiles/controller.dir/shm/shm.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/controller.dir/shm/shm.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp -o CMakeFiles/controller.dir/shm/shm.cpp.s
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp -o CMakeFiles/controller.dir/shm/shm.cpp.s
 
 # Object files for target controller
 controller_OBJECTS = \

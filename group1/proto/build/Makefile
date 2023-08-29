@@ -143,6 +143,136 @@ controller/fast:
 .PHONY : controller/fast
 
 #=============================================================================
+# Target rules for targets named all_tests
+
+# Build rule for target.
+all_tests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all_tests
+.PHONY : all_tests
+
+# fast build rule for target.
+all_tests/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/all_tests.dir/build.make CMakeFiles/all_tests.dir/build
+.PHONY : all_tests/fast
+
+#=============================================================================
+# Target rules for targets named test
+
+# Build rule for target.
+test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test
+.PHONY : test
+
+# fast build rule for target.
+test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test.dir/build.make CMakeFiles/test.dir/build
+.PHONY : test/fast
+
+#=============================================================================
+# Target rules for targets named conveyor_test
+
+# Build rule for target.
+conveyor_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 conveyor_test
+.PHONY : conveyor_test
+
+# fast build rule for target.
+conveyor_test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_test.dir/build.make CMakeFiles/conveyor_test.dir/build
+.PHONY : conveyor_test/fast
+
+#=============================================================================
+# Target rules for targets named test_conveyor
+
+# Build rule for target.
+test_conveyor: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_conveyor
+.PHONY : test_conveyor
+
+# fast build rule for target.
+test_conveyor/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_conveyor.dir/build.make CMakeFiles/test_conveyor.dir/build
+.PHONY : test_conveyor/fast
+
+#=============================================================================
+# Target rules for targets named heater_test
+
+# Build rule for target.
+heater_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 heater_test
+.PHONY : heater_test
+
+# fast build rule for target.
+heater_test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/heater_test.dir/build.make CMakeFiles/heater_test.dir/build
+.PHONY : heater_test/fast
+
+#=============================================================================
+# Target rules for targets named test_heater
+
+# Build rule for target.
+test_heater: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_heater
+.PHONY : test_heater
+
+# fast build rule for target.
+test_heater/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_heater.dir/build.make CMakeFiles/test_heater.dir/build
+.PHONY : test_heater/fast
+
+#=============================================================================
+# Target rules for targets named cooler_test
+
+# Build rule for target.
+cooler_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 cooler_test
+.PHONY : cooler_test
+
+# fast build rule for target.
+cooler_test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cooler_test.dir/build.make CMakeFiles/cooler_test.dir/build
+.PHONY : cooler_test/fast
+
+#=============================================================================
+# Target rules for targets named test_cooler
+
+# Build rule for target.
+test_cooler: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_cooler
+.PHONY : test_cooler
+
+# fast build rule for target.
+test_cooler/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_cooler.dir/build.make CMakeFiles/test_cooler.dir/build
+.PHONY : test_cooler/fast
+
+#=============================================================================
+# Target rules for targets named sim_test
+
+# Build rule for target.
+sim_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sim_test
+.PHONY : sim_test
+
+# fast build rule for target.
+sim_test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sim_test.dir/build.make CMakeFiles/sim_test.dir/build
+.PHONY : sim_test/fast
+
+#=============================================================================
+# Target rules for targets named test_sim
+
+# Build rule for target.
+test_sim: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_sim
+.PHONY : test_sim
+
+# fast build rule for target.
+test_sim/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_sim.dir/build.make CMakeFiles/test_sim.dir/build
+.PHONY : test_sim/fast
+
+#=============================================================================
 # Target rules for targets named shm
 
 # Build rule for target.
@@ -230,6 +360,126 @@ shm/shm.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/controller.dir/build.make CMakeFiles/controller.dir/shm/shm.cpp.s
 .PHONY : shm/shm.cpp.s
 
+tests/conveyor_tests.o: tests/conveyor_tests.cpp.o
+.PHONY : tests/conveyor_tests.o
+
+# target to build an object file
+tests/conveyor_tests.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_test.dir/build.make CMakeFiles/conveyor_test.dir/tests/conveyor_tests.cpp.o
+.PHONY : tests/conveyor_tests.cpp.o
+
+tests/conveyor_tests.i: tests/conveyor_tests.cpp.i
+.PHONY : tests/conveyor_tests.i
+
+# target to preprocess a source file
+tests/conveyor_tests.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_test.dir/build.make CMakeFiles/conveyor_test.dir/tests/conveyor_tests.cpp.i
+.PHONY : tests/conveyor_tests.cpp.i
+
+tests/conveyor_tests.s: tests/conveyor_tests.cpp.s
+.PHONY : tests/conveyor_tests.s
+
+# target to generate assembly for a file
+tests/conveyor_tests.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/conveyor_test.dir/build.make CMakeFiles/conveyor_test.dir/tests/conveyor_tests.cpp.s
+.PHONY : tests/conveyor_tests.cpp.s
+
+tests/cooler_tests.o: tests/cooler_tests.cpp.o
+.PHONY : tests/cooler_tests.o
+
+# target to build an object file
+tests/cooler_tests.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cooler_test.dir/build.make CMakeFiles/cooler_test.dir/tests/cooler_tests.cpp.o
+.PHONY : tests/cooler_tests.cpp.o
+
+tests/cooler_tests.i: tests/cooler_tests.cpp.i
+.PHONY : tests/cooler_tests.i
+
+# target to preprocess a source file
+tests/cooler_tests.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cooler_test.dir/build.make CMakeFiles/cooler_test.dir/tests/cooler_tests.cpp.i
+.PHONY : tests/cooler_tests.cpp.i
+
+tests/cooler_tests.s: tests/cooler_tests.cpp.s
+.PHONY : tests/cooler_tests.s
+
+# target to generate assembly for a file
+tests/cooler_tests.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/cooler_test.dir/build.make CMakeFiles/cooler_test.dir/tests/cooler_tests.cpp.s
+.PHONY : tests/cooler_tests.cpp.s
+
+tests/heater_tests.o: tests/heater_tests.cpp.o
+.PHONY : tests/heater_tests.o
+
+# target to build an object file
+tests/heater_tests.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/heater_test.dir/build.make CMakeFiles/heater_test.dir/tests/heater_tests.cpp.o
+.PHONY : tests/heater_tests.cpp.o
+
+tests/heater_tests.i: tests/heater_tests.cpp.i
+.PHONY : tests/heater_tests.i
+
+# target to preprocess a source file
+tests/heater_tests.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/heater_test.dir/build.make CMakeFiles/heater_test.dir/tests/heater_tests.cpp.i
+.PHONY : tests/heater_tests.cpp.i
+
+tests/heater_tests.s: tests/heater_tests.cpp.s
+.PHONY : tests/heater_tests.s
+
+# target to generate assembly for a file
+tests/heater_tests.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/heater_test.dir/build.make CMakeFiles/heater_test.dir/tests/heater_tests.cpp.s
+.PHONY : tests/heater_tests.cpp.s
+
+tests/simulation_step_test.o: tests/simulation_step_test.cpp.o
+.PHONY : tests/simulation_step_test.o
+
+# target to build an object file
+tests/simulation_step_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sim_test.dir/build.make CMakeFiles/sim_test.dir/tests/simulation_step_test.cpp.o
+.PHONY : tests/simulation_step_test.cpp.o
+
+tests/simulation_step_test.i: tests/simulation_step_test.cpp.i
+.PHONY : tests/simulation_step_test.i
+
+# target to preprocess a source file
+tests/simulation_step_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sim_test.dir/build.make CMakeFiles/sim_test.dir/tests/simulation_step_test.cpp.i
+.PHONY : tests/simulation_step_test.cpp.i
+
+tests/simulation_step_test.s: tests/simulation_step_test.cpp.s
+.PHONY : tests/simulation_step_test.s
+
+# target to generate assembly for a file
+tests/simulation_step_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sim_test.dir/build.make CMakeFiles/sim_test.dir/tests/simulation_step_test.cpp.s
+.PHONY : tests/simulation_step_test.cpp.s
+
+tests/tests.o: tests/tests.cpp.o
+.PHONY : tests/tests.o
+
+# target to build an object file
+tests/tests.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/all_tests.dir/build.make CMakeFiles/all_tests.dir/tests/tests.cpp.o
+.PHONY : tests/tests.cpp.o
+
+tests/tests.i: tests/tests.cpp.i
+.PHONY : tests/tests.i
+
+# target to preprocess a source file
+tests/tests.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/all_tests.dir/build.make CMakeFiles/all_tests.dir/tests/tests.cpp.i
+.PHONY : tests/tests.cpp.i
+
+tests/tests.s: tests/tests.cpp.s
+.PHONY : tests/tests.s
+
+# target to generate assembly for a file
+tests/tests.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/all_tests.dir/build.make CMakeFiles/all_tests.dir/tests/tests.cpp.s
+.PHONY : tests/tests.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -238,9 +488,19 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... test"
+	@echo "... test_conveyor"
+	@echo "... test_cooler"
+	@echo "... test_heater"
+	@echo "... test_sim"
 	@echo "... Simulation"
+	@echo "... all_tests"
 	@echo "... controller"
+	@echo "... conveyor_test"
+	@echo "... cooler_test"
+	@echo "... heater_test"
 	@echo "... shm"
+	@echo "... sim_test"
 	@echo "... controller/controller.o"
 	@echo "... controller/controller.i"
 	@echo "... controller/controller.s"
@@ -250,6 +510,21 @@ help:
 	@echo "... shm/shm.o"
 	@echo "... shm/shm.i"
 	@echo "... shm/shm.s"
+	@echo "... tests/conveyor_tests.o"
+	@echo "... tests/conveyor_tests.i"
+	@echo "... tests/conveyor_tests.s"
+	@echo "... tests/cooler_tests.o"
+	@echo "... tests/cooler_tests.i"
+	@echo "... tests/cooler_tests.s"
+	@echo "... tests/heater_tests.o"
+	@echo "... tests/heater_tests.i"
+	@echo "... tests/heater_tests.s"
+	@echo "... tests/simulation_step_test.o"
+	@echo "... tests/simulation_step_test.i"
+	@echo "... tests/simulation_step_test.s"
+	@echo "... tests/tests.o"
+	@echo "... tests/tests.i"
+	@echo "... tests/tests.s"
 .PHONY : help
 
 

@@ -1,6 +1,4 @@
 #include "../shm/shm.hpp"
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
 #include <iostream>
 #include <array>
 #include <chrono>
@@ -29,7 +27,7 @@ int main()
 {
 
     simulation_shm_wrapper shm("../simulation_shm");
-    uint8_t target_speed = 100;
+    uint8_t target_speed = 200;
     shm.set_conveyor_target_speed(target_speed);
     shm.set_heaters(0b00000111);
     shm.set_camera_status(0b00000001);

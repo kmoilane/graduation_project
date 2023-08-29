@@ -29,11 +29,13 @@ public:
     int16_t read_temperature_sensor(uint8_t index) const;
     uint8_t read_conveyor_speed_sensor() const;
     uint16_t read_qc_camera_feed() const;
+    uint8_t read_simulation_status() const;
 
     void set_conveyor_target_speed(uint8_t target_speed);
     void set_heaters(uint8_t heaters);
     void set_cooler(uint8_t cooler);
     void set_camera_status(uint8_t camera_status);
+    void set_simulation_status(uint8_t status);
 
     void set_temperature_sensor(int index, uint16_t value);
     void set_conveyor_speed_sensor(uint8_t speed);

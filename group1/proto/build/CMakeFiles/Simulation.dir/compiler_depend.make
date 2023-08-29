@@ -3,6 +3,7 @@
 
 CMakeFiles/Simulation.dir/main.cpp.o: ../main.cpp \
   /usr/include/stdc-predef.h \
+  ../includes/simulation.hpp \
   ../includes/random_between.hpp \
   /usr/include/c++/11/chrono \
   /usr/include/c++/11/ratio \
@@ -208,6 +209,7 @@ CMakeFiles/Simulation.dir/main.cpp.o: ../main.cpp \
   /usr/include/c++/11/bit \
   /usr/include/c++/11/pstl/glue_numeric_defs.h \
   /usr/include/c++/11/pstl/execution_defs.h \
+  ../includes/ambient_temperature.hpp \
   ../includes/units.hpp \
   /usr/include/nlohmann/json.hpp \
   /usr/include/c++/11/algorithm \
@@ -383,31 +385,23 @@ CMakeFiles/Simulation.dir/main.cpp.o: ../main.cpp \
   /usr/include/nlohmann/ordered_map.hpp \
   /usr/include/nlohmann/detail/macro_unscope.hpp \
   /usr/include/nlohmann/thirdparty/hedley/hedley_undef.hpp \
-  ../includes/heater.hpp \
-  ../includes/units.hpp \
   ../includes/config.hpp \
   /usr/include/c++/11/fstream \
   /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
   /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
   /usr/include/c++/11/bits/fstream.tcc \
   /usr/include/c++/11/iostream \
-  /usr/include/c++/11/bitset \
-  ../includes/ambient_temperature.hpp \
-  ../includes/random_between.hpp \
-  ../includes/conveyor.hpp \
-  /usr/include/c++/11/math.h \
+  ../includes/utils.hpp \
   ../includes/temperature_sensor.hpp \
-  ../includes/simulation.hpp \
-  ../includes/heater.hpp \
-  ../includes/ambient_temperature.hpp \
   ../includes/conveyor.hpp \
-  ../includes/temperature_sensor.hpp \
-  ../includes/quality_control.hpp \
-  /usr/include/c++/11/deque \
-  /usr/include/c++/11/bits/stl_deque.h \
-  /usr/include/c++/11/bits/deque.tcc \
   ../includes/devices.hpp \
+  ../includes/product.hpp \
+  ../includes/heater.hpp \
+  /usr/include/c++/11/bitset \
+  ../includes/quality_control.hpp \
   ../includes/cooler.hpp \
+  ../includes/communicator.hpp \
+  ../includes/simulation.hpp \
   ../includes/config.hpp \
   ../shm/shm.hpp \
   /usr/include/x86_64-linux-gnu/sys/ipc.h \
@@ -419,6 +413,8 @@ CMakeFiles/Simulation.dir/main.cpp.o: ../main.cpp \
   /usr/include/x86_64-linux-gnu/bits/shmlba.h \
   /usr/include/x86_64-linux-gnu/bits/types/struct_shmid_ds.h \
   /usr/include/x86_64-linux-gnu/bits/types/struct_shmid64_ds.h \
+  ../includes/utils.hpp \
+  ../shm/shm.hpp \
   /usr/include/c++/11/thread \
   /usr/include/c++/11/stop_token \
   /usr/include/c++/11/atomic \
@@ -698,21 +694,17 @@ CMakeFiles/Simulation.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 ../shm/shm.hpp:
 
-../includes/devices.hpp:
-
-/usr/include/c++/11/bits/deque.tcc:
-
-/usr/include/c++/11/deque:
-
-../includes/simulation.hpp:
-
-/usr/include/c++/11/math.h:
-
 /usr/include/c++/11/bitset:
+
+../includes/product.hpp:
+
+../includes/devices.hpp:
 
 /usr/include/c++/11/bits/fstream.tcc:
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h:
+
+../includes/communicator.hpp:
 
 /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h:
 
@@ -858,10 +850,6 @@ CMakeFiles/Simulation.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/posix2_lim.h:
 
-../includes/ambient_temperature.hpp:
-
-/usr/include/x86_64-linux-gnu/bits/local_lim.h:
-
 /usr/include/x86_64-linux-gnu/bits/posix1_lim.h:
 
 /usr/include/c++/11/bits/valarray_before.h:
@@ -890,9 +878,9 @@ CMakeFiles/Simulation.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/wctype-wchar.h:
 
-/usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
+/usr/include/semaphore.h:
 
-/usr/include/x86_64-linux-gnu/bits/floatn-common.h:
+/usr/include/c++/11/cwctype:
 
 /usr/include/c++/11/cwchar:
 
@@ -986,8 +974,6 @@ CMakeFiles/Simulation.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 /usr/include/stdlib.h:
 
-/usr/include/x86_64-linux-gnu/bits/iscanonical.h:
-
 /usr/include/c++/11/stop_token:
 
 ../includes/cooler.hpp:
@@ -1015,6 +1001,10 @@ CMakeFiles/Simulation.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 /usr/include/x86_64-linux-gnu/bits/fp-logb.h:
 
 /usr/include/c++/11/bits/ios_base.h:
+
+/usr/include/x86_64-linux-gnu/bits/floatn-common.h:
+
+/usr/include/x86_64-linux-gnu/bits/types/wint_t.h:
 
 ../includes/config.hpp:
 
@@ -1046,8 +1036,6 @@ CMakeFiles/Simulation.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 /usr/include/c++/11/bits/allocator.h:
 
-/usr/include/c++/11/bits/stl_deque.h:
-
 /usr/include/x86_64-linux-gnu/gnu/stubs.h:
 
 /usr/include/x86_64-linux-gnu/bits/endian.h:
@@ -1072,6 +1060,18 @@ CMakeFiles/Simulation.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/long-double.h:
 
+/usr/include/x86_64-linux-gnu/bits/time64.h:
+
+/usr/include/c++/11/ctime:
+
+/usr/include/c++/11/bits/stl_pair.h:
+
+/usr/include/c++/11/concepts:
+
+/usr/include/x86_64-linux-gnu/bits/local_lim.h:
+
+../includes/ambient_temperature.hpp:
+
 /usr/include/c++/11/bits/locale_classes.h:
 
 /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h:
@@ -1079,6 +1079,12 @@ CMakeFiles/Simulation.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 /usr/include/c++/11/bits/stl_multimap.h:
 
 ../main.cpp:
+
+/usr/include/x86_64-linux-gnu/bits/iscanonical.h:
+
+../includes/simulation.hpp:
+
+/usr/include/c++/11/bits/uses_allocator.h:
 
 /usr/include/c++/11/tr1/poly_hermite.tcc:
 
@@ -1089,10 +1095,6 @@ CMakeFiles/Simulation.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 /usr/include/c++/11/bits/memoryfwd.h:
 
 /usr/include/c++/11/bits/stl_function.h:
-
-/usr/include/c++/11/bits/stl_pair.h:
-
-/usr/include/c++/11/concepts:
 
 /usr/include/x86_64-linux-gnu/bits/environments.h:
 
@@ -1126,14 +1128,6 @@ CMakeFiles/Simulation.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 /usr/include/c++/11/ext/numeric_traits.h:
 
-/usr/include/x86_64-linux-gnu/c++/11/bits/cpu_defines.h:
-
-/usr/include/x86_64-linux-gnu/bits/timesize.h:
-
-/usr/include/c++/11/limits:
-
-/usr/include/c++/11/bits/ranges_util.h:
-
 /usr/include/x86_64-linux-gnu/bits/mathcalls-helper-functions.h:
 
 /usr/include/x86_64-linux-gnu/bits/types/error_t.h:
@@ -1162,15 +1156,19 @@ CMakeFiles/Simulation.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 /usr/include/c++/11/bits/locale_classes.tcc:
 
+/usr/include/x86_64-linux-gnu/bits/timesize.h:
+
+/usr/include/x86_64-linux-gnu/c++/11/bits/cpu_defines.h:
+
 /usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h:
 
 /usr/include/c++/11/debug/debug.h:
 
 /usr/include/features-time64.h:
 
-/usr/include/x86_64-linux-gnu/bits/time64.h:
+/usr/include/c++/11/limits:
 
-/usr/include/c++/11/ctime:
+/usr/include/c++/11/bits/ranges_util.h:
 
 /usr/include/c++/11/bits/invoke.h:
 
@@ -1470,6 +1468,8 @@ CMakeFiles/Simulation.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 
 /usr/include/c++/11/stdexcept:
 
+../includes/utils.hpp:
+
 /usr/include/c++/11/exception:
 
 /usr/include/nlohmann/detail/iterators/primitive_iterator.hpp:
@@ -1487,8 +1487,6 @@ CMakeFiles/Simulation.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 /usr/include/c++/11/tr1/beta_function.tcc:
 
 /usr/include/c++/11/array:
-
-/usr/include/c++/11/bits/uses_allocator.h:
 
 /usr/include/c++/11/bits/refwrap.h:
 
@@ -1519,7 +1517,3 @@ CMakeFiles/Simulation.dir/shm/shm.cpp.o: ../shm/shm.cpp \
 /usr/include/c++/11/bits/uniform_int_dist.h:
 
 /usr/include/c++/11/bits/basic_ios.h:
-
-/usr/include/semaphore.h:
-
-/usr/include/c++/11/cwctype:

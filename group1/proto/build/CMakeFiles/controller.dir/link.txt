@@ -1,1 +1,1 @@
-/usr/bin/c++ CMakeFiles/controller.dir/controller/controller.cpp.o CMakeFiles/controller.dir/shm/shm.cpp.o -o controller  shm/libshm.a 
+/usr/bin/g++ -g CMakeFiles/controller.dir/controller/controller.cpp.o CMakeFiles/controller.dir/shm/shm.cpp.o -o controller  shm/libshm.a 

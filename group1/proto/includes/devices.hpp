@@ -1,9 +1,18 @@
 #if !defined(DEVICES)
 #define DEVICES
 
-#include "units.hpp"
-#include "random_between.hpp"
 
+#include "random_between.hpp"
+#include "product.hpp"
+#include "heater.hpp"
+#include "quality_control.hpp"
+#include "cooler.hpp"
+#include "utils.hpp"
+
+
+namespace devices
+{
+    
 class Bolter
 {
 private:
@@ -11,15 +20,22 @@ private:
     
 public:
     bool state {false};
-    Bolter() {}
+    Bolter(bool state) : state(state) {}
     ~Bolter() {}
 
     // applies fixed probability to produce a defective product
-    int process(int product_state){
-        if (product_state == 1){
-            return rand_between::rand_between(0.0, 1.0) > bolter_fail_prob;
+    // produces a defective product if not on
+    ProductState process(ProductState product_state){
+        if (product_state == ProductState::good && ((state == false) ||
+            rand_between::rand_between(0.0, 1.0) < bolter_fail_prob)){
+                return ProductState::bad;
         }
         return product_state;
+    }
+
+    void configure(Configuration &config){
+        auto config_state = config.data["Simulation"]["Bolter"]["state"];
+        state = get_from_json(config_state, false);
     }
 };
 
@@ -27,13 +43,25 @@ class Shaper
 {
 public:
     bool state {false};
-    Shaper() {}
+    Shaper(bool initial_state) : state(state) {}
     ~Shaper() {}
 
-    int process(int product_state){
+    // produces a defective product if not on
+    ProductState process(ProductState product_state){
+        if ((product_state == ProductState::good) && (state == false)){
+            return ProductState::bad;
+        }
+        
         return product_state;
     }
+
+    void configure(Configuration &config){
+        auto config_state = config.data["Simulation"]["Shaper"]["state"];
+        state = get_from_json(config_state, false);
+    }
 };
+
+} // namespace devices
 
 
 #endif // DEVICES
