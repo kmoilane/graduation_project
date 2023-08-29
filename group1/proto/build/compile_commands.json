@@ -1,0 +1,52 @@
+[
+{
+  "directory": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/build",
+  "command": "/usr/bin/g++  -I/home/juho/Desktop/conveyor/graduation_project/group1/proto/includes -g -std=gnu++20 -o CMakeFiles/Simulation.dir/main.cpp.o -c /home/juho/Desktop/conveyor/graduation_project/group1/proto/main.cpp",
+  "file": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/main.cpp"
+},
+{
+  "directory": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/build",
+  "command": "/usr/bin/g++  -I/home/juho/Desktop/conveyor/graduation_project/group1/proto/includes -g -std=gnu++20 -o CMakeFiles/Simulation.dir/shm/shm.cpp.o -c /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp",
+  "file": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp"
+},
+{
+  "directory": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/build",
+  "command": "/usr/bin/g++  -I/home/juho/Desktop/conveyor/graduation_project/group1/proto/includes -g -std=gnu++20 -o CMakeFiles/controller.dir/controller/controller.cpp.o -c /home/juho/Desktop/conveyor/graduation_project/group1/proto/controller/controller.cpp",
+  "file": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/controller/controller.cpp"
+},
+{
+  "directory": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/build",
+  "command": "/usr/bin/g++  -I/home/juho/Desktop/conveyor/graduation_project/group1/proto/includes -g -std=gnu++20 -o CMakeFiles/controller.dir/shm/shm.cpp.o -c /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp",
+  "file": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp"
+},
+{
+  "directory": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/build",
+  "command": "/usr/bin/g++  -I/home/juho/Desktop/conveyor/graduation_project/group1/proto/includes -g -std=gnu++20 -o CMakeFiles/all_tests.dir/tests/tests.cpp.o -c /home/juho/Desktop/conveyor/graduation_project/group1/proto/tests/tests.cpp",
+  "file": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/tests/tests.cpp"
+},
+{
+  "directory": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/build",
+  "command": "/usr/bin/g++  -I/home/juho/Desktop/conveyor/graduation_project/group1/proto/includes -g -std=gnu++20 -o CMakeFiles/conveyor_test.dir/tests/conveyor_tests.cpp.o -c /home/juho/Desktop/conveyor/graduation_project/group1/proto/tests/conveyor_tests.cpp",
+  "file": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/tests/conveyor_tests.cpp"
+},
+{
+  "directory": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/build",
+  "command": "/usr/bin/g++  -I/home/juho/Desktop/conveyor/graduation_project/group1/proto/includes -g -std=gnu++20 -o CMakeFiles/heater_test.dir/tests/heater_tests.cpp.o -c /home/juho/Desktop/conveyor/graduation_project/group1/proto/tests/heater_tests.cpp",
+  "file": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/tests/heater_tests.cpp"
+},
+{
+  "directory": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/build",
+  "command": "/usr/bin/g++  -I/home/juho/Desktop/conveyor/graduation_project/group1/proto/includes -g -std=gnu++20 -o CMakeFiles/cooler_test.dir/tests/cooler_tests.cpp.o -c /home/juho/Desktop/conveyor/graduation_project/group1/proto/tests/cooler_tests.cpp",
+  "file": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/tests/cooler_tests.cpp"
+},
+{
+  "directory": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/build",
+  "command": "/usr/bin/g++  -I/home/juho/Desktop/conveyor/graduation_project/group1/proto/includes -g -std=gnu++20 -o CMakeFiles/sim_test.dir/tests/simulation_step_test.cpp.o -c /home/juho/Desktop/conveyor/graduation_project/group1/proto/tests/simulation_step_test.cpp",
+  "file": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/tests/simulation_step_test.cpp"
+},
+{
+  "directory": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/shm",
+  "command": "/usr/bin/g++  -I/home/juho/Desktop/conveyor/graduation_project/group1/proto/includes -g -std=gnu++20 -o CMakeFiles/shm.dir/shm.cpp.o -c /home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp",
+  "file": "/home/juho/Desktop/conveyor/graduation_project/group1/proto/shm/shm.cpp"
+}
+]

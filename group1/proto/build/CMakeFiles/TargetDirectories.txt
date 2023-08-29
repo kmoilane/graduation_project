@@ -1,0 +1,17 @@
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/Simulation.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/controller.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/all_tests.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/test.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/conveyor_test.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/test_conveyor.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/heater_test.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/test_heater.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/cooler_test.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/test_cooler.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/sim_test.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/test_sim.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/edit_cache.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/CMakeFiles/rebuild_cache.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/shm/CMakeFiles/shm.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/shm/CMakeFiles/edit_cache.dir
+/home/juho/Desktop/conveyor/graduation_project/group1/proto/build/shm/CMakeFiles/rebuild_cache.dir

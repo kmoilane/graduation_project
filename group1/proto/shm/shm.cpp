@@ -89,7 +89,7 @@ void simulation_shm_wrapper::set_qc_camera_feed(uint16_t feed)
     *(reinterpret_cast<uint16_t*>(value_ptr + 25)) = feed;
 }
 
-void simulation_shm_wrapper::set_camera_status(uint8_t status)
+void simulation_shm_wrapper::set_simulation_status(uint8_t status)
 {
     *(value_ptr + 27) = status;
 }

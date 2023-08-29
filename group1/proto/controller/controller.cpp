@@ -32,11 +32,12 @@ int main()
     shm.set_heaters(0b00000111);
     shm.set_camera_status(0b00000001);
     shm.set_cooler(0b00000001);
+    shm.set_simulation_status(0b00000001);
     uint8_t current_speed = 0;
     std::array<double, 10> sensors {};
     std::string ch {"°"};
 
-    for(int i = 0; i < 500; i++)
+    for(int i = 0; i < 100; i++)
     {
         system("clear");
         current_speed = shm.read_conveyor_speed_sensor();
@@ -53,6 +54,6 @@ int main()
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     } 
-
+    shm.set_simulation_status(0b00000000);
     return 0;
 }

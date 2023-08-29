@@ -1,0 +1,187 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.22"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12
+					]
+				},
+				{
+					"build" : "shm",
+					"jsonFile" : "directory-shm-Debug-e5286650a3579b193574.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.22"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "shm",
+					"targetIndexes" : 
+					[
+						6
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1
+					],
+					"name" : "Simulation",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Simulation::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Simulation-Debug-1db7e5466578f0911c17.json",
+					"name" : "Simulation",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_tests::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_tests-Debug-ce3fbb08a89c91c13107.json",
+					"name" : "all_tests",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "controller::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-controller-Debug-80d9ebd221299952bc38.json",
+					"name" : "controller",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "conveyor_test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-conveyor_test-Debug-2d9818f5ea26eb16cf3d.json",
+					"name" : "conveyor_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "cooler_test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-cooler_test-Debug-cced25f9d83fae41ac37.json",
+					"name" : "cooler_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "heater_test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-heater_test-Debug-9fc5cb82e8dc1cd50234.json",
+					"name" : "heater_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "shm::@7745a0176c468293cd11",
+					"jsonFile" : "target-shm-Debug-1482cb636bc6934de6a4.json",
+					"name" : "shm",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "sim_test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-sim_test-Debug-7fca830806770635a659.json",
+					"name" : "sim_test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test-Debug-4a9a8b987dea8091a303.json",
+					"name" : "test",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_conveyor::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_conveyor-Debug-6965cd38a0fc2c1e02de.json",
+					"name" : "test_conveyor",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_cooler::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_cooler-Debug-fa32babd1c0684b779a4.json",
+					"name" : "test_cooler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_heater::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_heater-Debug-acde2120bd555ea0ebc3.json",
+					"name" : "test_heater",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "test_sim::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-test_sim-Debug-946aef85d49f68e0e9c7.json",
+					"name" : "test_sim",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/juho/Desktop/conveyor/graduation_project/group1/proto/build",
+		"source" : "/home/juho/Desktop/conveyor/graduation_project/group1/proto"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

@@ -45,6 +45,8 @@ int main(int argc, const char *argv[])
     while (!simulation_on)
     {
         simulation_on = communicator.shm.read_simulation_status();
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        
     }
     std::cout << "Simulation online!\n";
 
