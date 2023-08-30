@@ -16,7 +16,6 @@ struct Simulation
 
 private:
 
-    int             speed_multiplier    {1};
     milliseconds    step_duration       {100}; 
     double          prev_offset         {0};
 
@@ -69,14 +68,11 @@ public:
     };                                      
 
     // average temperature of sensors
-    celsius get_average_temperature()
-    {
+    celsius get_average_temperature() const{
         celsius average{0};
-        for (TemperatureSensor& sensor : temp_sensors)
-        {
+        for (const TemperatureSensor& sensor : temp_sensors){
             average += sensor.get_temperature();
         }
-
         return average / temp_sensors.size();
     }
 
@@ -90,7 +86,8 @@ public:
         // Units gone through single step in manufacturing process since last step
         double steps = (((conveyor.get_upm_current() / 60'000) * step_time) * 3.0) + prev_offset;
 
-        for (size_t i = 0; i < std::floor(steps); i++){
+        size_t full_shifts = std::floor(steps);
+        for (size_t i = 0; i < full_shifts; i++){
     
             // process item in current new stage
             stages[1] = heater.process(stages[1]);
@@ -103,7 +100,7 @@ public:
             stages[0] = ProductState::good;
         }
 
-        prev_offset = steps - std::floor(steps);
+        prev_offset = steps - full_shifts;
 
     }
 

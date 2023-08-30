@@ -18,7 +18,7 @@ public:
     void update(milliseconds time_step);
 
     // temperature getter
-    celsius get_temperature();
+    celsius get_temperature() const;
 
     // configure values
     void configure(Configuration& config);
@@ -33,10 +33,10 @@ private:
     celsius step_value                      {get_step_value()};
 
     // generates new target temperature
-    celsius generate_target_temperature();
+    celsius generate_target_temperature() const;
 
     // computes new step value to reach set target temperature
-    celsius get_step_value();
+    celsius get_step_value() const;
 
 
 };
@@ -45,12 +45,12 @@ private:
 AmbientTemperature::AmbientTemperature(celsius temperature_avg)
                      : temperature_avg(temperature_avg) {}
 
-celsius AmbientTemperature::generate_target_temperature(){
+celsius AmbientTemperature::generate_target_temperature() const{
     return rand_between::rand_between(temperature_avg - max_offset,
                                         temperature_avg + max_offset);
 }
 
-celsius AmbientTemperature::get_step_value(){
+celsius AmbientTemperature::get_step_value() const{
     return (target_temp > current_temperature) ? temperature_change_1s : -temperature_change_1s;
 }
 
@@ -67,7 +67,7 @@ void AmbientTemperature::update(milliseconds time_step){
     }
 }
 
-celsius AmbientTemperature::get_temperature(){
+celsius AmbientTemperature::get_temperature() const{
     return current_temperature;
 }
 

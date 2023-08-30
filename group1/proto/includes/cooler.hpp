@@ -5,7 +5,6 @@
 #include "config.hpp"
 #include "random_between.hpp"
 #include "units.hpp"
-#include <bitset>
 #include <iostream>
 
 
@@ -23,7 +22,7 @@ public:
     void set_state(bool new_state);
 
     // get device state
-    bool get_state();
+    bool get_state() const ;
      
     // update device to match current time
     void update(milliseconds time_step);
@@ -32,19 +31,19 @@ public:
     void configure(Configuration &config);
 
     // convert cooling power to celsius
-    celsius power_to_celsius(watts power);
+    celsius power_to_celsius(watts power) const;
 
     // temperature getter
-    celsius get_temperature();
+    celsius get_temperature() const;
 
     // power getter
-    celsius get_power();
+    celsius get_power() const;
 
 
 private:
 
     // generates a random breaking point when on max power
-    int generate_rand_breakdown_point();
+    int generate_rand_breakdown_point() const;
 
     int breakdown_time_ms           {60'000};
     int random_breakdown_point_ms   {generate_rand_breakdown_point()};
@@ -54,8 +53,8 @@ private:
 
     // configurable
     watts power_max                 {500};
-    watts power_increase_1s         {2.5};
-    watts power_decrease_1s         {1.25};
+    watts power_increase_1ms        {2.5 / 1000.0};
+    watts power_decrease_1ms        {1.25 / 1000.0};
     celsius temperature_min         {-10};
 
     watts power_current             {0};
@@ -67,7 +66,7 @@ private:
 Cooler::Cooler(bool initial_state){ set_state(initial_state);}
 
 void Cooler::set_state(bool new_state){ state = new_state && is_functioning;}
-bool Cooler::get_state(){ return state;}
+bool Cooler::get_state() const { return state;}
 
 void Cooler::update(milliseconds time_step = -1){
 
@@ -78,10 +77,10 @@ void Cooler::update(milliseconds time_step = -1){
 
     // duration 
     if(state == true){
-        new_power += (time_step / 1000.0) * power_increase_1s;
+        new_power += time_step * power_increase_1ms;
     }
     else{
-        new_power -= (time_step / 1000.0) * power_decrease_1s;
+        new_power -= time_step * power_decrease_1ms;
     }
 
     // power remained at max level
@@ -115,19 +114,19 @@ void Cooler::configure(Configuration &config)
     state = get_from_json(config_data["state"], state);
 }
 
-celsius Cooler::power_to_celsius(watts power){
+celsius Cooler::power_to_celsius(watts power) const{
     return (power/ power_max) * temperature_min;
 }
 
-celsius Cooler::get_temperature(){
+celsius Cooler::get_temperature() const{
     return temperature_current;
 }
 
-celsius Cooler::get_power(){
+celsius Cooler::get_power() const{
     return power_current;
 }
 
-int Cooler::generate_rand_breakdown_point(){
+int Cooler::generate_rand_breakdown_point() const{
     return rand_between::rand_between(0, breakdown_time_ms);
 }
 

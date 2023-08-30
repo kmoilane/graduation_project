@@ -7,8 +7,8 @@
 #include "utils.hpp"
 #include <array>
 #include <algorithm>
-#include <bitset>
 #include <nlohmann/json.hpp>
+#include "random_between.hpp"
 
 
 class HeaterElement
@@ -27,15 +27,15 @@ public:
 
 private:
     const int   breakdown_time_ms           {60'000};
-    const watts power_increase_1s           {10};
-    const watts power_decrease_1s           {5};
+    const watts power_increase_1ms          {10 / 1000.0};
+    const watts power_decrease_1ms          {5 / 1000.0};
     const watts power_min                   {0};
 
     int         random_breakdown_point_ms   {generate_rand_breadown_point()};
     int         duration_on_max_power_ms    {0};
     bool        is_functioning              {true};
 
-    int         generate_rand_breadown_point();
+    int         generate_rand_breadown_point() const;
 
 };
 
@@ -55,10 +55,10 @@ void HeaterElement::update(milliseconds time_step){
 
     watts new_power {power};
     if(state == true){
-        new_power += (time_step / 1000.0) * power_increase_1s;
+        new_power += time_step * power_increase_1ms;
     }
     else{
-        new_power -= (time_step / 1000.0) * power_decrease_1s;
+        new_power -= time_step * power_decrease_1ms;
     }
 
     // power remained at max level
@@ -80,7 +80,7 @@ void HeaterElement::update(milliseconds time_step){
     power = std::clamp(new_power, power_min, power_max);
 }
 
-int HeaterElement::generate_rand_breadown_point(){
+int HeaterElement::generate_rand_breadown_point() const{
     return rand_between::rand_between(0, breakdown_time_ms);
 }
 
@@ -136,19 +136,19 @@ void Heater::update(milliseconds time_step){
 
  // set all states for heating elements
 void Heater::set_state(uint8_t states){
-    std::bitset<sizeof(states) * 8> bitrepr(states);
     for (size_t i = 0; i < elements.size(); i++){
-        elements[i].set_state(bitrepr[i]);
+        elements[i].set_state(bool(states & (1 << i)));
     }
 }
 
 // state on/off getter
 uint8_t Heater::get_state() const {
-    std::bitset<sizeof(uint8_t) * 8> bitrepr;
+    uint8_t out {0};
     for (size_t i = 0; i < elements.size(); i++){
-        bitrepr[i] = elements[i].state;
+        out |= (elements[i].state << i);
     }
-    return uint8_t(bitrepr.to_ulong());
+
+    return out;
 }
 
 // converts radiating power to celsius
@@ -180,7 +180,14 @@ void Heater::configure(Configuration &config){
     for (auto &&element : elements){
         element.step_time_ms = step_time_ms;
     }
-    
+
+    // set initial powers to elements
+    auto powers = config_data["Heater"]["element_power_levels"];
+    int index = 0;
+    for (auto &&level : powers){
+        elements[index].power = level;
+        ++index;
+    }
 }
 
 // applies linear probability of success on power range (0 - 3000 w) 
@@ -194,8 +201,7 @@ ProductState Heater::process(ProductState product_state) const {
     return product_state;
 }
 
-
-template<size_t S = 0, typename T, typename... Args>
+template<size_t S, typename T, typename... Args>
 void Heater::force_power_levels(T power, Args... args){
     static_assert(std::is_floating_point_v<T> || std::is_integral_v<T>);
     static_assert(sizeof...(args) < std::tuple_size<decltype(elements)>::value);

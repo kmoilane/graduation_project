@@ -21,7 +21,6 @@ private:
 public:
     bool state {false};
     Bolter(bool state) : state(state) {}
-    ~Bolter() {}
 
     // applies fixed probability to produce a defective product
     // produces a defective product if not on
@@ -44,7 +43,6 @@ class Shaper
 public:
     bool state {false};
     Shaper(bool initial_state) : state(state) {}
-    ~Shaper() {}
 
     // produces a defective product if not on
     ProductState process(ProductState product_state){

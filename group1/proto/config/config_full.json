@@ -5,11 +5,16 @@
         
         "Conveyor" :
         {
-            "speed_current": 200
+            "speed_current": 230 
         },
         "Heater" :
         {
-            "temperature_max": 100
+            "temperature_max": 100,
+            "element_power_levels": [
+                2000,
+                2000,
+                2000
+            ]
         },
         "Bolter" :
         {

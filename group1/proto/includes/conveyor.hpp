@@ -36,6 +36,8 @@ private:
     const uint8_t   speed_min               {0};
     const watts     power_min               {350};
     const watts     power_max               {20'000};
+    const double    acceleration_upms2      {1.0 / 1000};
+    const double    deacceleration_upms2    {-1.0 / 1000};
     const double    one_upm_in_watts        {32.75};
     const double    upm_per_speed           {600.0 / 255};
     const double    efficiency_min          {100};
@@ -104,9 +106,8 @@ void Conveyor::update(milliseconds time_step = -1)
         double multiplier   {};
         double direction    {};
 
-        multiplier          = (time_step / 1000.0);
-        direction           = upm_target > upm_current ? 1.0 : -1.0;
-        upm_current         += (multiplier * direction);
+        direction           = upm_target > upm_current ? acceleration_upms2 : deacceleration_upms2;
+        upm_current         += (time_step * direction);
         upm_current         = std::clamp(upm_current, upm_min, upm_max);
         speed_current       = calc_speed(upm_current);
         power_current       = calc_power(upm_current);

@@ -17,9 +17,11 @@ struct CameraMemory
     uint16_t cur_batch      {init};
     uint16_t last_batch     {init};
     uint16_t index          {0};
+    uint16_t max_index      {sizeof(decltype(index)) * 8};
+
 
     void update(ProductState product_state, bool camera_state){
-        if (index == sizeof(decltype(last_batch)) * 8){
+        if (index == max_index){
             last_batch = cur_batch;
             index = cur_batch = 0;
         }
@@ -51,7 +53,7 @@ public:
     void set_state(uint8_t new_state);
 
     // gets camera on/off
-    bool get_state();
+    bool get_state() const;
 
     // apply configuration
     void configure(Configuration &config);
@@ -100,7 +102,7 @@ void QualityControl::set_state(uint8_t new_state){
     state = (new_state == 1);
 }
 
-bool QualityControl::get_state(){
+bool QualityControl::get_state() const {
     return state;
 }
 

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22)
 
 set(CMAKE_CXX_STANDARD 20)
 
-project(Simulation)
+project(simulation)
 
 include_directories(includes)
 
@@ -93,5 +93,17 @@ target_include_directories(sim_test PRIVATE includes)
 add_custom_target(test_sim
     COMMAND sim_test
     DEPENDS sim_test
+    WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
+)
+
+add_custom_target(run_both
+    COMMAND ./run_simulation.sh
+    DEPENDS ${PROJECT_NAME} controller
+    WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
+)
+
+add_custom_target(run
+    COMMAND ./${PROJECT_NAME}
+    DEPENDS ${PROJECT_NAME}
     WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
 )

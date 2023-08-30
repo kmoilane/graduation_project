@@ -9,7 +9,7 @@ class TemperatureSensor
 {
 public:
     TemperatureSensor(double heater_factor) : heater_factor(heater_factor) {}
-    const celsius get_temperature() const { return temperature; }
+    celsius get_temperature() const { return temperature; }
     const celsius get_voltage() const { return voltage; }
     void update(celsius ambient_temp, celsius heater_temp, celsius conveyor_temp, celsius cooler_temp);
     void configure(Configuration &config);

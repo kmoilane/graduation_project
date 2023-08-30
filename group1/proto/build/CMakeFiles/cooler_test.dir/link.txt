@@ -1,1 +1,0 @@
-/usr/bin/g++ -g CMakeFiles/cooler_test.dir/tests/cooler_tests.cpp.o -o tests/cooler_test 
