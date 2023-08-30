@@ -40,20 +40,6 @@ add_custom_target(test
     WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
 )
 
-add_executable(conveyor_test tests/conveyor_tests.cpp)
-
-set_target_properties(conveyor_test PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
-)
-
-target_include_directories(conveyor_test PRIVATE includes)
-
-add_custom_target(test_conveyor
-    COMMAND conveyor_test
-    DEPENDS conveyor_test
-    WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
-)
-
 add_executable(heater_test tests/heater_tests.cpp)
 
 set_target_properties(heater_test PROPERTIES

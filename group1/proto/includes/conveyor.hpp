@@ -18,6 +18,8 @@ class Conveyor
 public:
     Conveyor()      = default;
 
+    bool            broken                  {false};
+    
     void            update(milliseconds time_step);
     void            configure(Configuration& config);
     void            set_speed_target(uint8_t value);
@@ -48,7 +50,6 @@ private:
     const speed     speed_breakdown         {540};
     const double    breakdown_prob          {5};
 
-    int             step_time_ms            {100};
     speed           upm_current             {600};
     speed           upm_target              {0};
     uint8_t         speed_target            {0};
@@ -56,7 +57,6 @@ private:
     double          efficiency_current      {56};
     watts           power_current           {20000};
     double          temperature             {11.2};  
-    bool            broken                  {false};
     uint8_t         broken_speed_max        {200};
 
     uint8_t         calc_speed(double upm);
@@ -83,7 +83,6 @@ void Conveyor::configure(Configuration& config)
         efficiency_current  = calc_efficiency(upm_current);
         power_current       = calc_power(upm_current);
         temperature         = calc_temperature(power_current, efficiency_current);
-        step_time_ms        = get_from_json(data["step_time_ms"], step_time_ms);
     }
     else
     {
@@ -96,9 +95,8 @@ void Conveyor::configure(Configuration& config)
 *  Updates conveyor speed, current_upm, power, efficiency
 *  and temperature. Does this time_step amount of times.
 */
-void Conveyor::update(milliseconds time_step = -1)
+void Conveyor::update(milliseconds time_step)
 {
-    time_step               = (time_step < 0) ? step_time_ms : time_step;
     upm_target              = calc_upm(speed_target);
     
     if (upm_current != upm_target)

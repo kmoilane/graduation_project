@@ -24,10 +24,9 @@ public:
     void configure(Configuration& config);
 
 private:
-    milliseconds step_time_ms               {100};
     celsius temperature_avg                 {20};
     celsius current_temperature             {temperature_avg};
-    const celsius temperature_change_1s     {0.01};
+    const celsius temperature_change_1ms     {0.01 / 1000.0};
     const celsius max_offset                {5};
     celsius target_temp                     {generate_target_temperature()};
     celsius step_value                      {get_step_value()};
@@ -51,14 +50,12 @@ celsius AmbientTemperature::generate_target_temperature() const{
 }
 
 celsius AmbientTemperature::get_step_value() const{
-    return (target_temp > current_temperature) ? temperature_change_1s : -temperature_change_1s;
+    return (target_temp > current_temperature) ? temperature_change_1ms : -temperature_change_1ms;
 }
 
 void AmbientTemperature::update(milliseconds time_step){
 
-    // use default time step if argument is not set
-    time_step = (time_step < 0) ? step_time_ms : time_step;
-    current_temperature += (time_step / 1000.0) * step_value;
+    current_temperature += (time_step * step_value);
 
     // set new target if old target has been reached
     if ((step_value > 0 && current_temperature >= target_temp) || (step_value < 0 && current_temperature <= target_temp)){
@@ -75,9 +72,6 @@ void AmbientTemperature::configure(Configuration& config){
     auto config_data = config.data["Simulation"];
     temperature_avg = get_from_json(config_data["Ambient_temperature"]["ambient_temperature"],
                                     temperature_avg);
-                    
-    step_time_ms = get_from_json(config_data["step_time_ms"],
-                                 step_time_ms);
 }
 
 #endif // AMBIENT_TEMP

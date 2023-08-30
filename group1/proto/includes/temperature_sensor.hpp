@@ -8,7 +8,7 @@
 class TemperatureSensor
 {
 public:
-    TemperatureSensor(double heater_factor) : heater_factor(heater_factor) {}
+    TemperatureSensor(double heater_factor, double distance_factor) : heater_factor(heater_factor), distance_factor(distance_factor) {}
     celsius get_temperature() const { return temperature; }
     const celsius get_voltage() const { return voltage; }
     void update(celsius ambient_temp, celsius heater_temp, celsius conveyor_temp, celsius cooler_temp);
@@ -27,6 +27,7 @@ private:
     millivolts      voltage{0};
     celsius         temperature{0};
     double          heater_factor{0};
+    double          distance_factor{0};
     bool            is_functioning{true};
 };
 
@@ -39,7 +40,8 @@ void TemperatureSensor::update(celsius ambient_temp, celsius heater_temp, celsiu
     }
     if (is_functioning)
     {
-        celsius tmp = ambient_temp + (heater_temp * heater_factor) + conveyor_temp + SENSOR_TEMP + cooler_temp;
+        celsius random_factor = rand_between::rand_between(-0.50, 0.50);
+        celsius tmp = ambient_temp + ((heater_temp * heater_factor) * distance_factor) + conveyor_temp + SENSOR_TEMP + cooler_temp + random_factor;
         if (tmp < MIN_TEMP)
         {
             temperature = MIN_TEMP;

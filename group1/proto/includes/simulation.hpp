@@ -20,11 +20,7 @@ private:
     double          prev_offset         {0};
 
 public:
-    // Product states at production line steps
-    std::array<ProductState, 4> stages {ProductState::good,
-                                        ProductState::not_present,
-                                        ProductState::not_present,
-                                        ProductState::not_present};
+
     // System devices
     AmbientTemperature ambient_temperature     {20};
     devices::Heater heater                     {false};
@@ -36,16 +32,16 @@ public:
 
 
     // Init sensors 
-   std::vector<TemperatureSensor> temp_sensors{{0.40},
-                                               {0.45},
-                                               {0.50},
-                                               {0.45},
-                                               {0.40},
-                                               {0.35},
-                                               {0.30},
-                                               {0.25},
-                                               {0.20},
-                                               {0.15}};
+   std::vector<TemperatureSensor> temp_sensors{{0.50, 1},
+                                               {0.45, 0.99},
+                                               {0.40, 0.98},
+                                               {0.35, 0.97},
+                                               {0.30, 0.97},
+                                               {0.25, 0.96},
+                                               {0.20, 0.95},
+                                               {0.15, 0.94},
+                                               {0.10, 0.93},
+                                               {0.05, 0.92}};
 
     // initialize variables from file
     Simulation(Configuration& config){
@@ -83,25 +79,23 @@ public:
             step_time = step_duration;
         }
 
-        // Units gone through single step in manufacturing process since last step
-        double steps = (((conveyor.get_upm_current() / 60'000) * step_time) * 3.0) + prev_offset;
+        // Units gone through single step in manufacturing process during step time
+        double steps = (((conveyor.get_upm_current() / 60'000) * step_time)) + prev_offset;
 
         size_t full_shifts = std::floor(steps);
+
         for (size_t i = 0; i < full_shifts; i++){
-    
+            ProductState p_state = ProductState::good;
+
             // process item in current new stage
-            stages[1] = heater.process(stages[1]);
-            stages[2] = shaper.process(stages[2]);
-            stages[3] = bolter.process(stages[3]);
-            quality_control.process(conveyor.get_upm_current(), stages.back());
+            p_state = heater.process(p_state);
+            p_state = shaper.process(p_state);
+            p_state = bolter.process(p_state);
 
-            // shift elements to a new position and add a new item to the production line
-            std::rotate(stages.rbegin(), stages.rbegin() - 1, stages.rend());
-            stages[0] = ProductState::good;
+            // shift it to register
+            quality_control.process(conveyor.get_upm_current(), p_state);
         }
-
         prev_offset = steps - full_shifts;
-
     }
 
     // set internal updates to all devices

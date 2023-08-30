@@ -10,17 +10,18 @@
 
 TEST_CASE("SIMULATION STEP TESTS"){
     Configuration config;
-    config.data["Simulation"]["Conveyor"]["speed_current"] = 127;
+    config.data["Simulation"]["Conveyor"]["speed_current"] = 0;
     config.data["Simulation"]["Camera"]["state"] = true;
     config.data["Simulation"]["Bolter"]["state"] = true;
     config.data["Simulation"]["Shaper"]["state"] = true;
 
-    Simulation sim(config);
-    sim.heater.set_state(0b00000111);
-    sim.heater.force_power_levels(2000, 2000, 2000);
-    sim.update(2000);
-
     SUBCASE("QUALITY_CONTROL"){
+        config.data["Simulation"]["Conveyor"]["speed_current"] = 127;
+        Simulation sim(config);
+        sim.heater.set_state(0b00000111);
+        sim.heater.force_power_levels(2000, 2000, 2000);
+        sim.update(2000);
+
         // start should output zero
         CHECK(sim.quality_control.get_output() == std::numeric_limits<uint16_t>::max());
 
@@ -62,16 +63,31 @@ TEST_CASE("SIMULATION STEP TESTS"){
             sim.step(6'000);
             CHECK(sim.quality_control.get_output() == std::numeric_limits<uint16_t>::max());
         }
+    }
 
-        // TEST SPEED AND QC CORRELATION
+    // from known start time to time t with const acceleration, there should/shouldn't be new data in qc
+    SUBCASE("SPEED_QC_CORRELATION"){
+        config.data["Simulation"]["Conveyor"]["speed_current"] = 200;
+        Simulation sim(config);
+        sim.heater.set_state(0b00000111);
+
+        // base case, all should fail
+        CHECK(sim.quality_control.get_output() == std::numeric_limits<uint16_t>::max());
+        sim.heater.force_power_levels(1500, 1500, 1500);
+
+        // 600 * (200 / 255) = 470..upm = 7.843 ups
+        // time = (ups * x = (16 + 3)) = 2.4225 s
+        sim.step(2100); //????
+        CHECK(sim.quality_control.get_output() == std::numeric_limits<uint16_t>::max());
 
         std::cout << sim.bolter.state << '\n'
-                  << sim.shaper.state << '\n'
-                  << sim.quality_control.get_state() << '\n'
-                  << std::bitset<8>(sim.heater.get_state()) << '\n'
-                  << sim.bolter.state << '\n'
-                  << sim.conveyor.get_upm_current() << '\n'
-                  << sim.heater.get_power() << '\n';
+                    << sim.shaper.state << '\n'
+                    << sim.quality_control.get_state() << '\n'
+                    << std::bitset<8>(sim.heater.get_state()) << '\n'
+                    << std::bitset<16>(sim.quality_control.get_output()) << '\n'
+                    << sim.bolter.state << '\n'
+                    << sim.conveyor.get_upm_current() << '\n'
+                    << sim.heater.get_power() << '\n';
 
 
     }

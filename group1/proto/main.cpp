@@ -93,7 +93,7 @@ int main(int argc, const char *argv[])
     int i = 0;
     while (true)
     {
-        if (!simulation_on)
+         if (!simulation_on)
         {
             std::cout << "Simulation offline.\n";
             break;
@@ -130,9 +130,10 @@ int main(int argc, const char *argv[])
 aamulle:
     - laitteiden update kutsut (aina if < 0..)
     - nimeäminen
-    - ambient
-    - const ja constexpr
+    - constexpr?
     - testit
+    - heater ja cooler rikkoutuminen ei oikein
+    - 
 
  */
 

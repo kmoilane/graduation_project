@@ -8,26 +8,27 @@
 #include <limits>
 #include "utils.hpp"
 #include "config.hpp"
+#include <bitset>
 
 
 // Simulates 16 bit Camera memory of defected products (1 == bad)
 struct CameraMemory
 {
     const uint16_t init     {std::numeric_limits<uint16_t>::max()};
-    uint16_t cur_batch      {init};
+    uint16_t cur_batch      {0};
     uint16_t last_batch     {init};
     uint16_t index          {0};
     uint16_t max_index      {sizeof(decltype(index)) * 8};
 
 
-    void update(ProductState product_state, bool camera_state){
+    void update(ProductState product_state){
+        cur_batch |= static_cast<uint16_t>(product_state == ProductState::bad) << index;
+        index += 1;
+
         if (index == max_index){
             last_batch = cur_batch;
             index = cur_batch = 0;
         }
-        
-        cur_batch |= static_cast<uint16_t>((product_state == ProductState::bad) || not camera_state) << index;
-        index += 1;
     }
 };
 
@@ -75,22 +76,25 @@ QualityControl::QualityControl(bool initial_state)
 
 ProductState QualityControl::process(speed conveyor_speed, ProductState product_state){
 
-    if (product_state != ProductState::not_present){
-        auto rvalue = rand_between::rand_between(0.0, 1.0);
+    auto rvalue = rand_between::rand_between(0.0, 1.0);
 
-        if (conveyor_speed > qc_speed_max){
-            product_state = ProductState::bad;
-        }
-
-        else if (product_state == ProductState::bad && rvalue < false_positive_prob){
-            product_state == ProductState::good;
-        }
-        else if (product_state == ProductState::good && rvalue < false_negative_prob){
-            product_state == ProductState::bad;
-        }
-
-        cam_memory.update(product_state, state); 
+    if (conveyor_speed > qc_speed_max){
+        product_state = ProductState::bad;
     }
+
+    else if (product_state == ProductState::bad && rvalue < false_positive_prob){
+        product_state == ProductState::good;
+    }
+    else if (product_state == ProductState::good && rvalue < false_negative_prob){
+        product_state == ProductState::bad;
+    }
+    if (state == false){
+        product_state = ProductState::bad;
+    }
+    
+
+    cam_memory.update(product_state); 
+
     return product_state;
 }
 

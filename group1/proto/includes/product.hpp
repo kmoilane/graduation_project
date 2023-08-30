@@ -6,7 +6,6 @@
 enum class ProductState{
     good,
     bad,
-    not_present,
 };
 
 

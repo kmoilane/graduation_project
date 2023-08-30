@@ -20,7 +20,6 @@ public:
     const watts power_max                   {2000};
     watts       power                       {0};
     bool        state                       {false};
-    int         step_time_ms                {100};
 
     void        set_state(bool new_state);
     void        update(milliseconds time_step);
@@ -49,9 +48,6 @@ void HeaterElement::set_state(bool new_state){
 
 // updates element's power level
 void HeaterElement::update(milliseconds time_step){
-
-    // use default time step if argument is not set
-    time_step = (time_step < 0) ? step_time_ms : time_step;
 
     watts new_power {power};
     if(state == true){
@@ -173,12 +169,6 @@ void Heater::configure(Configuration &config){
 
     if (temperature_max < 1){
         throw std::invalid_argument("Heater max temperature can't be below 1 (set in configuration file)");
-    }
-
-    // get step time from configuration
-    int step_time_ms = get_from_json(config_data["step_time_ms"], 100);
-    for (auto &&element : elements){
-        element.step_time_ms = step_time_ms;
     }
 
     // set initial powers to elements

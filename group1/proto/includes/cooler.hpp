@@ -49,7 +49,6 @@ private:
     int random_breakdown_point_ms   {generate_rand_breakdown_point()};
     int duration_on_max_power_ms    {0};
     const watts POWER_MIN           {0};
-    int step_time_ms                {100};
 
     // configurable
     watts power_max                 {500};
@@ -68,10 +67,7 @@ Cooler::Cooler(bool initial_state){ set_state(initial_state);}
 void Cooler::set_state(bool new_state){ state = new_state && is_functioning;}
 bool Cooler::get_state() const { return state;}
 
-void Cooler::update(milliseconds time_step = -1){
-
-    // use default time step if argument is not set
-    time_step = (time_step < 0) ? step_time_ms : time_step;
+void Cooler::update(milliseconds time_step){
 
     watts new_power {power_current};
 
@@ -106,9 +102,6 @@ void Cooler::configure(Configuration &config)
 {
     auto config_data = config.data["Simulation"]["Cooler"];
     power_max = get_from_json(config_data["max_power"], power_max);
-
-    // get step time from configuration
-    step_time_ms = get_from_json(config.data["Simulation"]["step_time_ms"], step_time_ms);
 
     // get init state from configuration
     state = get_from_json(config_data["state"], state);
