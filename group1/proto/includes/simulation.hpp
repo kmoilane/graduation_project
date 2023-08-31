@@ -16,10 +16,10 @@ struct Simulation
 
 private:
 
-    milliseconds    step_duration       {100}; 
     double          prev_offset         {0};
 
 public:
+    milliseconds    step_duration       {100}; 
 
     // System devices
     AmbientTemperature ambient_temperature     {20};
@@ -79,7 +79,7 @@ public:
             step_time = step_duration;
         }
 
-        // Units gone through single step in manufacturing process during step time
+        // Units gone through in manufacturing process during step time
         double steps = (((conveyor.get_upm_current() / 60'000) * step_time)) + prev_offset;
 
         size_t full_shifts = std::floor(steps);

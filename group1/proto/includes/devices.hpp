@@ -17,9 +17,9 @@ class Bolter
 {
 private:
     const double bolter_fail_prob {0.02};
+    bool state {false};
     
 public:
-    bool state {false};
     Bolter(bool state) : state(state) {}
 
     // applies fixed probability to produce a defective product
@@ -36,12 +36,21 @@ public:
         auto config_state = config.data["Simulation"]["Bolter"]["state"];
         state = get_from_json(config_state, false);
     }
+
+    void set_state(bool state){
+        this->state = state;
+    }
+
+    bool get_state() const{
+        return state;
+    }
 };
 
 class Shaper
 {
-public:
+private:
     bool state {false};
+public:
     Shaper(bool initial_state) : state(state) {}
 
     // produces a defective product if not on
@@ -56,6 +65,14 @@ public:
     void configure(Configuration &config){
         auto config_state = config.data["Simulation"]["Shaper"]["state"];
         state = get_from_json(config_state, false);
+    }
+
+    void set_state(bool state){
+        this->state = state;
+    }
+
+    bool get_state() const{
+        return state;
     }
 };
 

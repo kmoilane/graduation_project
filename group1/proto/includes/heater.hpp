@@ -17,24 +17,25 @@ class HeaterElement
 public:
     HeaterElement(bool initial_state);
 
-    const watts power_max                   {2000};
-    watts       power                       {0};
-    bool        state                       {false};
+    const watts power_max                           {2000};
+    watts       power                               {0};
+    bool        state                               {false};
 
-    void        set_state(bool new_state);
-    void        update(milliseconds time_step);
+    void set_state(bool new_state);
+    void update(milliseconds time_step);
 
 private:
-    const int   breakdown_time_ms           {60'000};
-    const watts power_increase_1ms          {10 / 1000.0};
-    const watts power_decrease_1ms          {5 / 1000.0};
-    const watts power_min                   {0};
+    const milliseconds  breakdown_extended_start    {30'000}; // breakdown can occur after this point
+    milliseconds        breakdown_extended_end      {60'000}; // breakdown must have happened by this point
+    milliseconds        random_breakdown_point      {generate_rand_breakdown_point()};
+    const watts         power_increase_1ms          {10 / 1000.0};
+    const watts         power_decrease_1ms          {5 / 1000.0};
+    const watts         power_min                   {0};
 
-    int         random_breakdown_point_ms   {generate_rand_breadown_point()};
-    int         duration_on_max_power_ms    {0};
-    bool        is_functioning              {true};
+    milliseconds        duration_on_max_power       {0};
+    bool                is_functioning              {true};
 
-    int         generate_rand_breadown_point() const;
+    int generate_rand_breakdown_point() const;
 
 };
 
@@ -59,16 +60,16 @@ void HeaterElement::update(milliseconds time_step){
 
     // power remained at max level
     if ((power >= power_max) && (new_power >= power_max)){
-        duration_on_max_power_ms += time_step; 
+        duration_on_max_power += time_step; 
     }
     // power dropped below max level
     else if((power >= power_max) && (new_power < power_max)){
-        duration_on_max_power_ms = 0;
-        random_breakdown_point_ms = generate_rand_breadown_point();
+        duration_on_max_power = 0;
+        random_breakdown_point = generate_rand_breakdown_point();
     }
 
     // there is a chance of element breakdown
-    if(is_functioning && (duration_on_max_power_ms > random_breakdown_point_ms)){
+    if(is_functioning && (duration_on_max_power > random_breakdown_point)){
         state = is_functioning = false;
     }
 
@@ -76,8 +77,8 @@ void HeaterElement::update(milliseconds time_step){
     power = std::clamp(new_power, power_min, power_max);
 }
 
-int HeaterElement::generate_rand_breadown_point() const{
-    return rand_between::rand_between(0, breakdown_time_ms);
+int HeaterElement::generate_rand_breakdown_point() const{
+    return rand_between::rand_between(breakdown_extended_start, breakdown_extended_end);
 }
 
 

@@ -16,6 +16,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 target_link_libraries(${PROJECT_NAME} PRIVATE shm)
 
+# CONTROLLER
 add_executable(controller controller/controller.cpp shm/shm.cpp)
 
 set_target_properties(controller PROPERTIES
@@ -26,6 +27,18 @@ target_include_directories(controller PRIVATE includes)
 
 target_link_libraries(controller PRIVATE shm)
 
+# UI
+add_executable(ui ui/ui.cpp shm/shm.cpp)
+
+set_target_properties(ui PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+
+target_include_directories(ui PRIVATE includes)
+
+target_link_libraries(ui PRIVATE shm)
+
+# TESTS
 add_executable(all_tests tests/tests.cpp)
 
 set_target_properties(all_tests PROPERTIES
@@ -34,61 +47,34 @@ set_target_properties(all_tests PROPERTIES
 
 target_include_directories(all_tests PRIVATE includes)
 
+# CUSTOM COMMANDS (usage example: "make run" or "make run_sim" etc.)
+
+add_custom_target(run
+    COMMAND ./run_simulation.sh
+    DEPENDS ${PROJECT_NAME} controller ui
+    WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
+)
+
 add_custom_target(test
     COMMAND all_tests
     DEPENDS all_tests
     WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
 )
 
-add_executable(heater_test tests/heater_tests.cpp)
-
-set_target_properties(heater_test PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
-)
-
-target_include_directories(heater_test PRIVATE includes)
-
-add_custom_target(test_heater
-    COMMAND heater_test
-    DEPENDS heater_test
+add_custom_target(run_ui
+    COMMAND ui
+    DEPENDS ui
     WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
 )
 
-add_executable(cooler_test tests/cooler_tests.cpp)
-
-set_target_properties(cooler_test PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
-)
-
-target_include_directories(cooler_test PRIVATE includes)
-
-add_custom_target(test_cooler
-    COMMAND cooler_test
-    DEPENDS cooler_test
+add_custom_target(run_controller
+    COMMAND controller
+    DEPENDS controller
     WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
 )
 
-add_executable(sim_test tests/simulation_step_test.cpp)
 
-set_target_properties(sim_test PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
-)
-
-target_include_directories(sim_test PRIVATE includes)
-
-add_custom_target(test_sim
-    COMMAND sim_test
-    DEPENDS sim_test
-    WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
-)
-
-add_custom_target(run_both
-    COMMAND ./run_simulation.sh
-    DEPENDS ${PROJECT_NAME} controller
-    WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
-)
-
-add_custom_target(run
+add_custom_target(run_sim
     COMMAND ./${PROJECT_NAME}
     DEPENDS ${PROJECT_NAME}
     WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}

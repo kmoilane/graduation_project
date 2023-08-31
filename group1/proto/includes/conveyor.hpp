@@ -16,10 +16,7 @@ namespace devices
 class Conveyor
 {
 public:
-    Conveyor()      = default;
-
-    bool            broken                  {false};
-    
+                    Conveyor() = default;
     void            update(milliseconds time_step);
     void            configure(Configuration& config);
     void            set_speed_target(uint8_t value);
@@ -30,12 +27,13 @@ public:
     uint8_t         get_speed_target()  const {return speed_target;}
     celsius         get_temperature()   const {return temperature;}
     double          get_upm_current()   const {return std::floor(upm_current);}
+    bool            is_broken()         const {return broken;}
 
 private:
     const speed     upm_min                 {0};
     const speed     upm_max                 {600};
-    const uint8_t   speed_max               {255};
     const uint8_t   speed_min               {0};
+    const uint8_t   speed_max               {255};
     const watts     power_min               {350};
     const watts     power_max               {20'000};
     const double    acceleration_upms2      {1.0 / 1000};
@@ -48,7 +46,7 @@ private:
     const watts     watts_per_celsius       {1000};
     const celsius   breakdown_temperature   {80};
     const speed     speed_breakdown         {540};
-    const double    breakdown_prob          {5};
+    const double    breakdown_prob          {2};
 
     speed           upm_current             {600};
     speed           upm_target              {0};
@@ -58,6 +56,7 @@ private:
     watts           power_current           {20000};
     double          temperature             {11.2};  
     uint8_t         broken_speed_max        {200};
+    bool            broken                  {false};
 
     uint8_t         calc_speed(double upm);
     double          calc_upm(uint8_t speed);
@@ -147,7 +146,7 @@ void Conveyor::check_breakpoint(double temperature)
     {
         if (!broken)
         {
-            int rand = rand_between::rand_between(1, 100);
+            int rand = rand_between::rand_between(0, 100);
             if (rand < breakdown_prob)
                 broken = true;
         }
@@ -160,7 +159,7 @@ void Conveyor::check_breakpoint(double temperature)
 */
 double Conveyor::calc_upm(uint8_t speed)
 {
-    return std::floor(unsigned(speed) * upm_per_speed);
+    return std::floor(static_cast<unsigned>(speed) * upm_per_speed);
 }
 
 /*
@@ -171,16 +170,30 @@ uint8_t Conveyor::calc_speed(double upm)
 {
     return std::ceil(upm / upm_per_speed);
 }
+
+/*
+*   Calculates power for given units per minute speed.
+*   Return value is in watts.
+*/
 double Conveyor::calc_power(double upm_current)
 {
     return power_min + upm_current * one_upm_in_watts;
 }
+
+/*
+*   Calculates conveyors efficiency for given units per minute speed.
+*   Returns a percentage between 100 and 56.
+*/
 double Conveyor::calc_efficiency(double upm)
 {
     return std::max(efficiency_max,
         (efficiency_min -
         ((efficiency_min - efficiency_max) * upm / max_efficiency_upm)));
 }
+/*
+*   Calculates temperature from power and efficiency, returns it as a
+*   degree Celsius.
+*/
 double Conveyor::calc_temperature(double power, double efficiency)
 {
     return power * (efficiency / 100) / watts_per_celsius;

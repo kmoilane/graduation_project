@@ -50,6 +50,36 @@ std::string get_config_path(int argc, const char* argv[])
     exit(0);
 }
 
+
+void print_header(){
+    std::cout << "\033c";
+    std::cout << std::setw(9)  << "upm       || " 
+              << std::setw(9)  << "heater W  || " 
+              << std::setw(20) << "qc        || "
+              << std::setw(9)  << "heater on || "
+              << std::setw(9)  << "ambient   || "
+              << std::setw(9)  << "heater C  || "
+              << std::setw(9)  << "time ms   || "
+              << std::setw(9)  << "cooler C  || "
+              << std::setw(9)  << "cooler on || "
+              << std::setw(9)  << "cooler W  || " << '\n' << '\n'; 
+}
+
+void print_data(Simulation& sim, int step){
+    std::cout << std::setprecision(2) << std::fixed << std::boolalpha;
+    std::cout << std::setw(9)  << sim.conveyor.get_upm_current()                     << " || "
+              << std::setw(9)  << sim.heater.get_power()                             << " || "
+              << std::setw(9)  << std::bitset<16>(sim.quality_control.get_output())  << " || "
+              << std::setw(9)  << std::bitset<8>(sim.heater.get_state())             << " || "
+              << std::setw(9)  << sim.ambient_temperature.get_temperature()          << " || "
+              << std::setw(9)  << sim.heater.get_temperature()                       << " || "
+              << std::setw(9)  << (step * sim.step_duration) / 1000.0                << " || "
+              << std::setw(9)  << sim.cooler.get_temperature()                       << " || "
+              << std::setw(9)  << sim.cooler.state                                   << " || "
+              << std::setw(9)  << sim.cooler.get_power()                             << " || " << '\n';
+
+}
+
 int main(int argc, const char *argv[])
 {
     // for testing purposes
@@ -58,23 +88,6 @@ int main(int argc, const char *argv[])
     Configuration config(get_config_path(argc, &(*argv)));
     Simulation sim(config);
     Communicator communicator;
-
-    sim.heater.set_state(0b00000111);
-
-    sim.quality_control.set_state(true);
-
-
-    std::cout   << "upm       || " 
-                << "heater W  || " 
-                << "qc        || "
-                << "heater on || "
-                << "ambient   || "
-                << "heater C  || "
-                << "time ms   || "
-                << "cooler C  || "
-                << "cooler on || "
-                << "cooler W  || " << '\n' << '\n'; 
-    std::cout << std::setprecision(2) << std::fixed << std::boolalpha;
 
     // get step time from configuration
     auto config_step_time = config.data["Simulation"]["step_time_ms"];
@@ -91,10 +104,9 @@ int main(int argc, const char *argv[])
 
 
     int i = 0;
-    while (true)
-    {
-         if (!simulation_on)
-        {
+    while (true){
+
+        if (!simulation_on){
             std::cout << "Simulation offline.\n";
             break;
         }
@@ -106,34 +118,16 @@ int main(int argc, const char *argv[])
         communicator.listen(sim);
         simulation_on = communicator.shm.read_simulation_status();
 
-        std::cout << std::setw(9)  << sim.conveyor.get_upm_current()                     << " || "
-                  << std::setw(9)  << sim.heater.get_power()                             << " || "
-                  << std::setw(16) << std::bitset<16>(sim.quality_control.get_output())  << " || "
-                  << std::setw(9)  << std::bitset<8>(sim.heater.get_state())             << " || "
-                  << std::setw(9)  << sim.ambient_temperature.get_temperature()          << " || "
-                  << std::setw(9)  << sim.heater.get_temperature()                       << " || "
-                  << std::setw(9)  << (i * step_time_ms) / 1000.0                        << " || "
-                  << std::setw(9)  << sim.cooler.get_temperature()                       << " || "
-                  << std::setw(9)  << sim.cooler.state                                   << " || "
-                  << std::setw(9)  << sim.cooler.get_power()                             << " || " << '\n';
+        if (i % 15 == 0){
+            print_header();   
+        }
 
-
+        print_data(sim, i);
+        
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         ++i;
     }
     
     return 0;
 }
-
-/* 
-
-aamulle:
-    - laitteiden update kutsut (aina if < 0..)
-    - nimeäminen
-    - constexpr?
-    - testit
-    - heater ja cooler rikkoutuminen ei oikein
-    - 
-
- */
 
