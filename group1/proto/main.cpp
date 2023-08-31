@@ -53,30 +53,30 @@ std::string get_config_path(int argc, const char* argv[])
 
 void print_header(){
     std::cout << "\033c";
-    std::cout << std::setw(9)  << "upm       || " 
+    std::cout << "\033[1;47;30mupm " << std::setw(9) << " || " 
               << std::setw(9)  << "heater W  || " 
-              << std::setw(20) << "qc        || "
-              << std::setw(9)  << "heater on || "
-              << std::setw(9)  << "ambient   || "
               << std::setw(9)  << "heater C  || "
-              << std::setw(9)  << "time ms   || "
+              << std::setw(9)  << "heater on || "
+              << std::setw(20) << "qc        || "
+              << std::setw(9)  << "ambient   || "
               << std::setw(9)  << "cooler C  || "
               << std::setw(9)  << "cooler on || "
-              << std::setw(9)  << "cooler W  || " << '\n' << '\n'; 
+              << std::setw(9)  << "cooler W  || " 
+              << std::setw(9)  << "time ms   || \033[0m" << '\n' << '\n'; 
 }
 
 void print_data(Simulation& sim, int step){
     std::cout << std::setprecision(2) << std::fixed << std::boolalpha;
     std::cout << std::setw(9)  << sim.conveyor.get_upm_current()                     << " || "
               << std::setw(9)  << sim.heater.get_power()                             << " || "
-              << std::setw(9)  << std::bitset<16>(sim.quality_control.get_output())  << " || "
-              << std::setw(9)  << std::bitset<8>(sim.heater.get_state())             << " || "
-              << std::setw(9)  << sim.ambient_temperature.get_temperature()          << " || "
               << std::setw(9)  << sim.heater.get_temperature()                       << " || "
-              << std::setw(9)  << (step * sim.step_duration) / 1000.0                << " || "
+              << std::setw(9)  << std::bitset<3>(sim.heater.get_state())             << " || "
+              << std::setw(9)  << std::bitset<16>(sim.quality_control.get_output())  << " || "
+              << std::setw(9)  << sim.ambient_temperature.get_temperature()          << " || "
               << std::setw(9)  << sim.cooler.get_temperature()                       << " || "
               << std::setw(9)  << sim.cooler.state                                   << " || "
-              << std::setw(9)  << sim.cooler.get_power()                             << " || " << '\n';
+              << std::setw(9)  << sim.cooler.get_power()                             << " || " 
+              << std::setw(9)  << (step * sim.step_duration) / 1000.0                << " || " << '\n';
 
 }
 
@@ -88,10 +88,6 @@ int main(int argc, const char *argv[])
     Configuration config(get_config_path(argc, &(*argv)));
     Simulation sim(config);
     Communicator communicator;
-
-    // get step time from configuration
-    auto config_step_time = config.data["Simulation"]["step_time_ms"];
-    int step_time_ms = config_step_time.is_null() ? 1000 : int(config_step_time);
 
     uint8_t simulation_on = communicator.shm.read_simulation_status();
     while (!simulation_on)
@@ -116,14 +112,13 @@ int main(int argc, const char *argv[])
 
         communicator.send(sim); 
         communicator.listen(sim);
-        simulation_on = communicator.shm.read_simulation_status();
 
         if (i % 15 == 0){
             print_header();   
         }
-
         print_data(sim, i);
         
+        simulation_on = communicator.shm.read_simulation_status();
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         ++i;
     }

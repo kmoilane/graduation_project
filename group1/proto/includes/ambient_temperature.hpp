@@ -26,7 +26,7 @@ public:
 private:
     celsius temperature_avg                 {20};
     celsius current_temperature             {temperature_avg};
-    const celsius temperature_change_1ms     {0.01 / 1000.0};
+    const celsius temperature_change_1ms    {0.01 / 1000.0};
     const celsius max_offset                {5};
     celsius target_temp                     {generate_target_temperature()};
     celsius step_value                      {get_step_value()};
