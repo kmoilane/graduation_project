@@ -10,7 +10,6 @@ void print_bits(const T& value)
 {
     using decay_type = std::decay_t<T>;
 
-    std::cout << "0b";
     for (int i = sizeof(decay_type) * 8 - 1; i >= 0; --i)
     {
         std::cout << ((value & (1ULL << i)) ? 1 : 0);
