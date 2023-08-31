@@ -1,4 +1,4 @@
-# graduation_project
+# Graduation_Project
 
 ## Production line tech specs
 
