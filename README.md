@@ -4,6 +4,13 @@ This is a C++ software that simulates a production line environment.
 The detailed subject can be found from subject.md file and from the README.md in
 the production_line_simulation directory.
 
+**People behind the project**
+
+[kirsimarianne](https://github.com/kirsimarianne)<br>
+[holle1234](https://github.com/holle1234)<br>
+[kmoilane](https://github.com/kmoilane)
+
+
 ## Summary
 
 Production line produces realistic data from 10 temperature sensors and a quality
@@ -48,26 +55,21 @@ and a little UI all at once in one terminal session)
 
 The following commands are examples on how to build and run this program.
 
-1. To run the simulation, start by cloning this repository.
-
+1. To run the simulation, start by cloning this repository.<br>
     `git clone https://github.com/kmoilane/graduation_project.git Simulation`
 
-2. Go to the build folder and build it with CMake.
-
-    `cd Simulation/production_line_simulation/build`
-
+2. Go to the build folder and build it with CMake.<br>
+    `cd Simulation/production_line_simulation/build`<br>
     `cmake .. && make`
 
 ### Run all programs at once (requires tmux)
 
 3. If you want to run all 3 programs (simulation, UI and controller), make sure you
-have execute rights for the run script.
-    
+have execute rights for the run script.<br>
     `chmod +x run_simulation.sh`
 
 4. To run all programs with default config, run the run_simulation script.
-This works best on full window sized terminal.
-
+This works best on full window sized terminal.<br>
     `./run_simulation.sh`
 
 ### Run separately
@@ -78,35 +80,29 @@ you also need to start the controller on a separate terminal.
 **Simulation must be ran from build directory to be abled to read config files**
 
 3. Run the simulation inside build directory with desired configuration.
-Current options are:
-
-    `./simulation` - starts simulation using config_default.json
-
-    `./simulation config_default.json` - uses files default configuration
-
-    `./simulation config_stop.json` - uses hault state configuration
-
+Current options are:<br>
+    `./simulation` - starts simulation using config_default.json<br>
+    `./simulation config_default.json` - uses files default configuration<br>
+    `./simulation config_stop.json` - uses hault state configuration<br>
     `./simulation config_full.json` - uses full speed full power state
     configuration
     
     (More about configuration later on)
 
 4. Open a new terminal and navigate yourself to the build folder, then run
-   controller
-
+   controller<br>
     `./controller`
 
-Simulation should start producing data and you can control the environment with
-control ui.
+*Simulation should now start producing data and you can control the environment with
+controller.*
 
 5. (Optional) If you want to see some more data, you can also run ui, which once
    again requires fresh terminal and for you to navigate to build folder. Then
-   run ui:
-
+   run ui:<br>
     `./ui`
 
-**To exit the program properly, use the controllers exit option. This detaches
-programs from the shared memory in a controlled way.** 
+**To exit the programs properly, use the controllers exit option. This detaches
+processes from the shared memory in a controlled way and closes all the programs.** 
 
 
 ## Configuration
