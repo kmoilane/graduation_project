@@ -114,12 +114,134 @@ can also create your own configurations using the same layout as those examples.
 The file needs to end with `.json`, it needs to be in the config directory and
 it should only contain same fields that are used in the example configurations.
 You can play with the field values, and if you go over ranges, the values will be
-overwritten with default values. Ranges for different variable values, will be
-posted here later... :)
+overwritten with default values.
+
+### Configurable values and ranges
+
+**NOTE** although you can change the values in the configuration, keep in mind
+that the simulation will act accordingly and for example with too high
+temperatures, everything will break (real production line can't take too much
+heat either).
+
+Currently you can change the following values in the configuration within the
+ranges mentioned inside the ().
+
+```json
+{
+    "Simulation" :
+    {
+        "step_time_ms" : (range: int),
+        
+        "Conveyor" :
+        {
+            "speed_current": (range: 0 - 255) 
+        },
+        "Heater" :
+        {
+            "temperature_max": (range: double),
+            "element_power_levels": [
+                (range: 0 - 2000),
+                (range: 0 - 2000),
+                (range: 0 - 2000)
+            ]
+        },
+        "Bolter" :
+        {
+            "state": (range: true/false)
+        },
+        "Shaper" :
+        {
+            "state": (range: true/false)
+        },
+        "Camera" :
+        {
+            "state": (range: true/false)
+        },
+        "Ambient_temperature" :
+        {
+            "ambient_temperature" : (range: double)
+        },
+        "Cooler" :
+        {
+            "max_power" : (range: double),
+            "state" : (range: true/false)
+        },
+        "temperature_sensor" :
+        {
+            "break_probability" : (range: double)
+        }
+    }
+}
+```
 
 
+## Shared memory
 
+In case you want to create your own controller software for this simulation, you
+can do so by using the shm wrapper class in the shm directory. It has functions
+to each piece in the simulation, for both reading and writing data. Simulation
+itself points to shared memory file in
+`production_line_simulation/simulation_shm`, so make sure to point your
+controllers shared memory in the same file.
 
+Shared memory allocates a block of memory, where we have mapped either 1 or 2
+bytes of memory for each of the devices depending on the data size that they
+each send. You can access these memory addresses by using pointers to these addresses.
+
+### Current shared memory mapping is as follows:
+
+**shm_pointer+0   = temp_sesnsor1 (16 bits/2 bytes)<br>
+shm_pointer+2 = temp_sesnsor2 (16 bits/2 bytes)<br>
+shm_pointer+4 = temp_sesnsor3 (16 bits/2 bytes)<br>
+shm_pointer+6 = temp_sesnsor4 (16 bits/2 bytes)<br>
+shm_pointer+8 = temp_sesnsor5 (16 bits/2 bytes)<br>
+shm_pointer+10 = temp_sesnsor6 (16 bits/2 bytes)<br>
+shm_pointer+12 = temp_sesnsor7 (16 bits/2 bytes)<br>
+shm_pointer+14 = temp_sesnsor8 (16 bits/2 bytes)<br>
+shm_pointer+16 = temp_sesnsor9 (16 bits/2 bytes)<br>
+shm_pointer+18 = temp_sesnsor10 (16 bits/2 bytes)<br>
+shm_pointer+20 = conveyor_speed_current (8 bits/1 byte)<br>
+shm_pointer+21 = conveyor_speed_target (8 bits/1 byte)<br>
+shm_pointer+22 = heater_controls (8 bits/1 byte)<br>
+shm_pointer+23 = cooler_control (8 bits/1 byte)<br>
+shm_pointer+24 = qc_camera_control (8 bits/1 byte)<br>
+shm_pointer+25 = qc_camera_feed (16 bits/2 bytes)<br>
+shm_pointer+27 = simulation_on_off (8 bits/1 byte)<br>**
+
+Data sent by temperature sensors come as millivolts between -400 and 1100.
+These can be translated to degrees in celsius by following TI-LM35C temperature
+sensors data sheet, but basically 10mV = 1 degree Celsius. So the temperature range
+that these sesnors can measure is between -40 and 110.
+
+Conveyor speeds are 0-255.
+
+Heaters can be toggled on and off by changing the first 3 bits of the byte as
+follows:<br>
+heater_1 `0b00000001`<br>
+heater_2 `0b00000010`<br>
+heater_3 `0b00000100`<br>
+Where 1 means on and 0 means off.<br>
+All heaters on at the same time looks like this<br>
+`0b00000111`<br>
+and off<br>
+`0b00000000`
+
+Cooler can be toggled on and off by changing the first bit in the byte as follows:<br>
+cooler `0b00000001`<br>
+Where 1 means on and 0 means off.
+
+Quality control camera can be turned on and off in the same way as cooler.
+
+Quality control camera sends quality feed 16 bits at a time. 16 bits represent
+a bitmask where 0 equals good quality product/unit and 1 equals failed unit that
+didn't pass quality check for one reason or another. The interval of new bitsets
+depends on the conveyors speed, since the camera processes 16 units after which
+it sends the new bitmask to the shared memory address.
+
+And finally we have a way to start and close the simulation through controller
+via the simulation_on_off address. Simulation starts when the first bit in the
+address is 1 and shuts down when the bit turns to 0. This way we can control the
+detachment from shared memory and close it properly.
 
 
 
