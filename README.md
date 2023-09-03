@@ -1,4 +1,3 @@
-# Test header
 # Production Line Simulation
 
 This is a C++ software that simulates a production line environment.
