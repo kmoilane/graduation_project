@@ -6,10 +6,9 @@
 #include "temperature_sensor.hpp"
 #include "units.hpp"
 #include "conveyor.hpp"
-#include "config.hpp"
 #include "devices.hpp"
-#include "product.hpp"
 #include "config.hpp"
+#include "product.hpp"
 
 struct Simulation
 {
@@ -72,30 +71,55 @@ public:
         return average / temp_sensors.size();
     }
 
-    // simulate products going through the manufacturing
+    /* 
+    Updates the manufacturing process to the state matching time shift argument.
+    Argument is a time difference from current time in milliseconds.
+    */
     void step(milliseconds step_time = -1){
 
         if (step_time < 0){
             step_time = step_duration;
         }
 
-        // Units gone through in manufacturing process during step time
-        double steps = (((conveyor.get_upm_current() / 60'000) * step_time)) + prev_offset;
+        // Units gone through manufacturing process during step time
+        double steps = conveyor.items_passed(step_time) + prev_offset;
+        int full_shifts = std::floor(steps);
 
-        size_t full_shifts = std::floor(steps);
+        // solves shifting time for a single product
+        auto formula = [](double c, double k, double o)
+                       {return -c + pow((pow(c, 2.0) + 2 * k - 2 * o), 0.5);};
 
-        for (size_t i = 0; i < full_shifts; i++){
+        int iter_start = std::max(1, full_shifts - 16);
+
+        // clear qc-register if more than 16 units have gone by
+        if (iter_start > 16){
+            quality_control.clear();
+        }
+
+        // Update environment to the states where conveyor did a full shift to a product.
+        double prev_shift_time = 0;
+        for (int i = iter_start; i < full_shifts + 1; i++){
+
+            // shift time in milliseconds
+            double shift_time = formula(conveyor.get_upm_current(), i, prev_offset) * 60'000.0;
+
+            // update to a specific process state using difference of each update
+            update(shift_time - prev_shift_time);
+            prev_shift_time = shift_time;
+
+            // process product
             ProductState p_state = ProductState::good;
-
-            // process item in current new stage
             p_state = heater.process(p_state);
             p_state = shaper.process(p_state);
             p_state = bolter.process(p_state);
 
-            // shift it to register
+            // shift item to the qc-register
             quality_control.process(conveyor.get_upm_current(), p_state);
         }
         prev_offset = steps - full_shifts;
+
+        // update to the current process state
+        update(step_time - prev_shift_time);
     }
 
     // set internal updates to all devices

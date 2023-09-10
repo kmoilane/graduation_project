@@ -1,0 +1,2 @@
+/usr/bin/ar qc libshm.a CMakeFiles/shm.dir/shm.cpp.o
+/usr/bin/ranlib libshm.a

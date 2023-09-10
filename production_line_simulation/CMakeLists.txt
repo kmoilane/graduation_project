@@ -51,7 +51,7 @@ target_include_directories(all_tests PRIVATE includes)
 
 add_custom_target(run
     COMMAND ./run_simulation.sh
-    DEPENDS ${PROJECT_NAME} controller ui
+    DEPENDS ${PROJECT_NAME} controller ui 
     WORKING_DIRECTORY ${CMAKE_PROJECT_DIR}
 )
 

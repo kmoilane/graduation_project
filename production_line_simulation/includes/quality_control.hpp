@@ -30,6 +30,12 @@ struct CameraMemory
             index = cur_batch = 0;
         }
     }
+
+    void clear(){
+        last_batch = init;
+        cur_batch = index = 0;
+    }
+
 };
 
 
@@ -58,6 +64,9 @@ public:
 
     // apply configuration
     void configure(Configuration &config);
+
+    // clear qc-memory (set to initial state)
+    void clear(){cam_memory.clear();}
 
 private:
 

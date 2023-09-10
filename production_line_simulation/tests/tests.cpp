@@ -80,9 +80,8 @@ TEST_CASE("CONVEYOR TESTS")
     }
     SUBCASE("TESTING UPDATE AND TEMPERATURE CHANGES")
     {
-        // config ongelma ylhäältä
 
-        config.data["Simulation"]["Conveyor"]["speed_current"]  = 0;
+        config.data["Simulation"]["Conveyor"]["speed_current"] = 0;
         config.data["Simulation"]["step_time_ms"] = 1000;
         Simulation sim{config};
         sim.conveyor.set_speed_target(1);
@@ -419,13 +418,14 @@ TEST_CASE("SIMULATION STEP TESTS"){
 
     SUBCASE("QC_HEATER-HIGH-CORRELATION"){
 
-        // if heaters are at full power (6000w) most of products should be ok
+        // if heaters start at full power (6000w) most of the products should be ok
         config.data["Simulation"]["Conveyor"]["speed_current"] = 200;
         Simulation sim(config);
         sim.heater.force_power_levels(2000, 2000, 2000);
+        sim.heater.set_state(0b00000111);
 
-        sim.update(1000);
-        int loops {1000};
+        sim.step(2100); // enough to fill register once
+        int loops {10};
         int total {0};
         for (size_t i = 0; i < loops; i++){
             sim.step(2100);
@@ -439,11 +439,16 @@ TEST_CASE("SIMULATION STEP TESTS"){
     SUBCASE("SPEED_QC_CORRELATION"){
         config.data["Simulation"]["Conveyor"]["speed_current"] = 200;
         
+        
         Simulation sim(config);
         sim.heater.force_power_levels(2000, 2000, 2000);
 
         // 600 * (200 / 255) = 470..upm = 7.843 ups
         // time = (16/ups) = 2.04 s
+        std::cout << sim.conveyor.items_passed(2100) << " "
+                  << sim.conveyor.get_upm_current() << " "
+                  << sim.conveyor.get_direction() << " "
+                  << sim.conveyor.upm_target << '\n';
         sim.step(2000); // there should not be data before 2.04s
         CHECK(sim.quality_control.get_output() == std::numeric_limits<uint16_t>::max());
         sim.step(100); // quality control ouput should have changed by now

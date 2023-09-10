@@ -82,12 +82,11 @@ void print_data(Simulation& sim, int step){
 
 int main(int argc, const char *argv[])
 {
-    // for testing purposes
-    // final simulation must take account realtime operation
-
     Configuration config(get_config_path(argc, &(*argv)));
     Simulation sim(config);
     Communicator communicator;
+
+    milliseconds timestep = get_from_json(config.data["Simulation"]["step_time_ms"], 1000);
 
     uint8_t simulation_on = communicator.shm.read_simulation_status();
     while (!simulation_on)
@@ -99,8 +98,8 @@ int main(int argc, const char *argv[])
     std::cout << "Simulation online!\n";
 
 
-    int i = 0;
-    while (true){
+    int i = 1;
+    while (++i){
 
         if (!simulation_on){
             std::cout << "Simulation offline.\n";
@@ -108,19 +107,17 @@ int main(int argc, const char *argv[])
         }
 
         sim.step(); 
-        sim.update();
 
         communicator.send(sim); 
         communicator.listen(sim);
 
         if (i % 15 == 0){
-            print_header();   
+            print_header();
         }
         print_data(sim, i);
         
         simulation_on = communicator.shm.read_simulation_status();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        ++i;
+        std::this_thread::sleep_for(std::chrono::milliseconds(timestep));
     }
     
     return 0;
