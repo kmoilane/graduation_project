@@ -28,10 +28,9 @@ public:
     celsius         get_temperature()   const {return temperature;}
     double          get_upm_current()   const {return std::floor(upm_current);}
     bool            is_broken()         const {return broken;}
-    double          items_passed(milliseconds timestep);
+    double          units_passed_in(milliseconds timestep);
     double          get_direction();
 
-    speed           upm_target              {0};
 private:
     const speed     upm_min                 {0};
     const speed     upm_max                 {600};
@@ -51,6 +50,7 @@ private:
     const speed     speed_breakdown         {540};
     const double    breakdown_prob          {2};
 
+    speed           upm_target              {0};
     speed           upm_current             {600};
     uint8_t         speed_target            {0};
     uint8_t         speed_current           {0};
@@ -133,7 +133,7 @@ double Conveyor::get_direction(){
 /*
 *   Get number of conveyor half rotations during timestep
 */
-double Conveyor::items_passed(milliseconds timestep){
+double Conveyor::units_passed_in(milliseconds timestep){
     double direction = get_direction();
     double n_items = ((upm_current / 60'000.0) * timestep) + 0.5 * (direction / 1000.0) * pow(timestep, 2.0);
     return n_items;

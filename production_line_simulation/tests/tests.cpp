@@ -445,10 +445,6 @@ TEST_CASE("SIMULATION STEP TESTS"){
 
         // 600 * (200 / 255) = 470..upm = 7.843 ups
         // time = (16/ups) = 2.04 s
-        std::cout << sim.conveyor.items_passed(2100) << " "
-                  << sim.conveyor.get_upm_current() << " "
-                  << sim.conveyor.get_direction() << " "
-                  << sim.conveyor.upm_target << '\n';
         sim.step(2000); // there should not be data before 2.04s
         CHECK(sim.quality_control.get_output() == std::numeric_limits<uint16_t>::max());
         sim.step(100); // quality control ouput should have changed by now

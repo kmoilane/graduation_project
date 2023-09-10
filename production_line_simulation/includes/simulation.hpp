@@ -82,7 +82,7 @@ public:
         }
 
         // Units gone through manufacturing process during step time
-        double steps = conveyor.items_passed(step_time) + prev_offset;
+        double steps = conveyor.units_passed_in(step_time) + prev_offset;
         int full_shifts = std::floor(steps);
 
         // solves shifting time for a single product
