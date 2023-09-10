@@ -1,1 +1,0 @@
-/usr/bin/g++ -g CMakeFiles/simulation.dir/main.cpp.o CMakeFiles/simulation.dir/shm/shm.cpp.o -o simulation  shm/libshm.a 
