@@ -28,6 +28,8 @@ public:
     celsius         get_temperature()   const {return temperature;}
     double          get_upm_current()   const {return std::floor(upm_current);}
     bool            is_broken()         const {return broken;}
+    double          units_passed_in(milliseconds timestep);
+    double          get_direction();
 
 private:
     const speed     upm_min                 {0};
@@ -48,12 +50,12 @@ private:
     const speed     speed_breakdown         {540};
     const double    breakdown_prob          {2};
 
-    speed           upm_current             {600};
     speed           upm_target              {0};
+    speed           upm_current             {600};
     uint8_t         speed_target            {0};
     uint8_t         speed_current           {0};
     double          efficiency_current      {56};
-    watts           power_current           {20000};
+    watts           power_current           {20'000};
     double          temperature             {11.2};  
     uint8_t         broken_speed_max        {200};
     bool            broken                  {false};
@@ -63,6 +65,7 @@ private:
     double          calc_power(double upm_current);
     double          calc_efficiency(double upm);
     double          calc_temperature(double power, double efficiency);
+
 };
 
 /*
@@ -79,6 +82,7 @@ void Conveyor::configure(Configuration& config)
         speed_current       = static_cast<uint8_t>(current);
         speed_target        = speed_current;
         upm_current         = calc_upm(current);
+        upm_target          = upm_current;
         efficiency_current  = calc_efficiency(upm_current);
         power_current       = calc_power(upm_current);
         temperature         = calc_temperature(power_current, efficiency_current);
@@ -100,10 +104,9 @@ void Conveyor::update(milliseconds time_step)
     
     if (upm_current != upm_target)
     {
-        double multiplier   {};
         double direction    {};
 
-        direction           = upm_target > upm_current ? acceleration_upms2 : deacceleration_upms2;
+        direction           = get_direction();
         upm_current         += (time_step * direction);
         upm_current         = std::clamp(upm_current, upm_min, upm_max);
         speed_current       = calc_speed(upm_current);
@@ -111,6 +114,29 @@ void Conveyor::update(milliseconds time_step)
         efficiency_current  = calc_efficiency(upm_current);
         temperature         = calc_temperature(power_current, efficiency_current);
     }
+}
+
+/*
+*   Get (de)acceleration direction 
+*/
+double Conveyor::get_direction(){
+    double direction = 0;
+    if (upm_target > upm_current){
+        direction = acceleration_upms2;
+    }
+    else if (upm_target < upm_current){
+        direction = deacceleration_upms2;
+    }
+    return direction;
+}
+
+/*
+*   Get number of conveyor half rotations during timestep
+*/
+double Conveyor::units_passed_in(milliseconds timestep){
+    double direction = get_direction();
+    double n_items = ((upm_current / 60'000.0) * timestep) + 0.5 * (direction / 1000.0) * pow(timestep, 2.0);
+    return n_items;
 }
 
 /*

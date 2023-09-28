@@ -80,9 +80,8 @@ TEST_CASE("CONVEYOR TESTS")
     }
     SUBCASE("TESTING UPDATE AND TEMPERATURE CHANGES")
     {
-        // config ongelma ylhäältä
 
-        config.data["Simulation"]["Conveyor"]["speed_current"]  = 0;
+        config.data["Simulation"]["Conveyor"]["speed_current"] = 0;
         config.data["Simulation"]["step_time_ms"] = 1000;
         Simulation sim{config};
         sim.conveyor.set_speed_target(1);
@@ -419,13 +418,14 @@ TEST_CASE("SIMULATION STEP TESTS"){
 
     SUBCASE("QC_HEATER-HIGH-CORRELATION"){
 
-        // if heaters are at full power (6000w) most of products should be ok
+        // if heaters start at full power (6000w) most of the products should be ok
         config.data["Simulation"]["Conveyor"]["speed_current"] = 200;
         Simulation sim(config);
         sim.heater.force_power_levels(2000, 2000, 2000);
+        sim.heater.set_state(0b00000111);
 
-        sim.update(1000);
-        int loops {1000};
+        sim.step(2100); // enough to fill register once
+        int loops {10};
         int total {0};
         for (size_t i = 0; i < loops; i++){
             sim.step(2100);
@@ -438,6 +438,7 @@ TEST_CASE("SIMULATION STEP TESTS"){
     // from known start time to time t with const acceleration, there should/shouldn't be new data in qc
     SUBCASE("SPEED_QC_CORRELATION"){
         config.data["Simulation"]["Conveyor"]["speed_current"] = 200;
+        
         
         Simulation sim(config);
         sim.heater.force_power_levels(2000, 2000, 2000);
